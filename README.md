@@ -79,8 +79,6 @@ The main board does not present many difficulties. The biggest circuit used is a
 
 ### Equipment
 
-Click on the image!
-
 <table>
   <thead>
     <tr>
