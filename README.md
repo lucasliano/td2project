@@ -38,6 +38,11 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
+      <ol>
+      <li><a href="#system-diagram">System Diagram</a></li>
+      <li><a href="#main-board-pcb-and-schematics">Main Board PCB and Schematics</a></li>
+      <li><a href="#equipment">Equipment</a></li>
+    </ol>
     </li>
     <li><a href="#authors">Authors</a></li>
     <li><a href="#license">License</a></li>
@@ -54,14 +59,14 @@ The activation/deactivation of the system is meant to be controlled using an and
 
 Should an error occurred, a notification will be sent to the mobile device and it will be logged into the internal EEPROM memory. The system also takes into account possible disconnections from the power supply. 
 
-##### System Diagram
+#### System Diagram
 <p align="center">
   <a href="https://github.com/lucasliano/td2project">
     <img src="diagrama/Diagrama.png" alt="diagrama">
   </a>
 </p>
 
-### Main Board PCB&Schematics
+### Main Board PCB and Schematics
 
 #### Schematics
 The main board does not present many difficulties. The biggest circuit used is a battery charger and power supply source administrator. You will find this schematic in a PDF file in the ``` PCB_files_kicad ``` folder.
@@ -72,6 +77,101 @@ The main board does not present many difficulties. The biggest circuit used is a
   </a>
 </p>
 
+### Equipment
+
+Click on the image!
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th>Qty</th>
+      <th>Unit Price (ARS)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <p>STM32 Blue Pill</p>
+        <img src="diagrama/Bluepill.png" width="200" height="100">
+      </td>
+      <td>1</td>
+      <td>$1200</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Bluetooth</p>
+        <img src="diagrama/BT.png" width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$700</td>
+    </tr>
+    <tr>
+      <td>
+        <p>RFID Sensor</p>
+        <img src="diagrama/RFID.png" width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$500</td>
+    </tr>
+    <tr>
+      <td>
+        <p>I2C - LCD Display</p>
+        <img src="diagrama/LCD.png" width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$900</td>
+    </tr>
+    <tr>
+      <td>
+        <p>IR Sensor</p>
+        <img src="diagrama/Sensor.png"  width="200" height="200">
+      </td>
+      <td>2</td>
+      <td>$250</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Keyboard</p>
+        <img src="diagrama/Teclado.png"  width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$160</td>
+    </tr>
+    <tr>
+      <td>
+        <p>EEPROM Memory</p>
+        <img src="diagrama/eeprom.png"  width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$300</td>
+    </tr>
+    <tr>
+      <td>
+        <p>DC-DC Booster</p>
+        <img src="diagrama/MT3608.png"  width="200" height="150">
+      </td>
+      <td>1</td>
+      <td>$250</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Buzzer</p>
+        <img src="diagrama/buzzer.png"  width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$160</td>
+    </tr>
+    <tr>
+      <td>
+        <p>Li-Ion battery</p>
+        <img src="diagrama/Batteries.png"  width="200" height="200">
+      </td>
+      <td>1</td>
+      <td>$500</td>
+    </tr>
+  </tbody>
+</table>
 
 
 <!-- Authors -->
