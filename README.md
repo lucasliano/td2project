@@ -67,7 +67,7 @@ Should an error occurred, a notification will be sent to the mobile device and i
 The main board does not present many difficulties. The biggest circuit used is a battery charger and power supply source administrator. You will find this schematic in a PDF file in the ``` PCB_files_kicad ``` folder.
 
 <p align="center">
-  <a href="https://github.com/lucasliano/td2project">
+  <a href="https://github.com/lucasliano/td2project/blob/main/PCB_files_kicad/Schematic%20v1.2.pdf">
     <img src="PCB_files_kicad/schematic_preview.png" alt="diagrama">
   </a>
 </p>
