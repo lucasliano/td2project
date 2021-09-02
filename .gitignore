@@ -27,6 +27,7 @@ fp-info-cache
 
 
 
-# Debug folder
-
-/Debug
+# Debug folder and stm info
+.metadata
+code/.settings
+code/Debug/
