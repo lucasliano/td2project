@@ -365,7 +365,7 @@ AR Path="/60FAC4BE/61001D7B" Ref="BT?"  Part="1"
 AR Path="/60FFCFF1/61001D7B" Ref="BT1"  Part="1" 
 F 0 "BT1" H 4350 3800 50  0000 L CNN
 F 1 "Batt" H 4350 3600 50  0000 L CNN
-F 2 "TerminalBlock:TerminalBlock_bornier-2_P5.08mm" V 4550 3710 50  0001 C CNN
+F 2 "mylib:Batt" V 4550 3710 50  0001 C CNN
 F 3 "http://www.batteryspace.com/prod-specs/4869.pdf" V 4550 3710 50  0001 C CNN
 F 4 "https://articulo.mercadolibre.com.ar/MLA-903149783-celda-18650-lg-2200mah-con-terminal-para-soldar-37v-42v-_JM?matt_tool=88481412&matt_word=&matt_source=google&matt_campaign_id=11618987428&matt_ad_group_id=113657532672&matt_match_type=&matt_network=g&matt_device=m&matt_creative=479785004862&matt_keyword=&matt_ad_position=&matt_ad_type=pla&matt_merchant_id=334313049&matt_product_id=MLA903149783&matt_product_partition_id=758317414930&matt_target_id=aud-415044759576:pla-758317414930&gclid=EAIaIQobChMI6N6ysO338QIVsyCtBh2hBgntEAQYASABEgKf_vD_BwE" H 4550 3650 50  0001 C CNN "Mouser Link"
 F 5 "-" H 4550 3650 50  0001 C CNN "Mouser Number"
@@ -426,7 +426,7 @@ P 9400 4050
 AR Path="/60FAC4BE/6124D4A7" Ref="R?"  Part="1" 
 AR Path="/60FFCFF1/6124D4A7" Ref="R7"  Part="1" 
 F 0 "R7" H 9550 4100 50  0000 L CNN
-F 1 "150 @ 20mA" H 9550 4000 50  0000 L CNN
+F 1 "150" H 9550 4000 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 9440 4040 50  0001 C CNN
 F 3 "" H 9400 4050 50  0001 C CNN
 F 4 "" H 9400 4050 50  0001 C CNN "Mouser Link"
@@ -966,7 +966,7 @@ P 8000 3600
 AR Path="/60FAC4BE/61443227" Ref="R?"  Part="1" 
 AR Path="/60FFCFF1/61443227" Ref="R10"  Part="1" 
 F 0 "R10" H 8100 3650 50  0000 L CNN
-F 1 "16k-THT" H 8100 3550 50  0000 L CNN
+F 1 "16k" H 8100 3550 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 8040 3590 50  0001 C CNN
 F 3 "" H 8000 3600 50  0001 C CNN
 F 4 "" H 8000 3600 50  0001 C CNN "Mouser Link"
