@@ -1,3 +1,39 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP AT24CS01-STUM
+D I2C Serial EEPROM, 1Kb (128x8) with Unique Serial Number, SOT-23-5
+K I2C Serial EEPROM Nonvolatile Memory
+F http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8815-SEEPROM-AT24CS01-02-Datasheet.pdf
+$ENDCMP
+#
+$CMP AT24CS02-STUM
+D I2C Serial EEPROM, 2Kb (256x8) with Unique Serial Number, SOT-23-5
+K I2C Serial EEPROM Nonvolatile Memory
+F http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8815-SEEPROM-AT24CS01-02-Datasheet.pdf
+$ENDCMP
+#
+$CMP AT24CS04-STUM
+D I2C Serial EEPROM, 4Kb (512x8) with Unique Serial Number, SOT-23-5
+K I2C Serial EEPROM Nonvolatile Memory
+F http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8766-SEEPROM-AT24CS04-08-Datasheet.pdf
+$ENDCMP
+#
+$CMP AT24CS08-STUM
+D I2C Serial EEPROM, 8Kb (1024x8) with Unique Serial Number, SOT-23-5
+K I2C Serial EEPROM Nonvolatile Memory
+F http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8766-SEEPROM-AT24CS04-08-Datasheet.pdf
+$ENDCMP
+#
+$CMP AT24CS16-STUM
+D I2C Serial EEPROM, 16Kb (2048x8) with Unique Serial Number, SOT-23-5
+K I2C Serial EEPROM Nonvolatile Memory
+F http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8859-SEEPROM-AT24CS16-Datasheet.pdf
+$ENDCMP
+#
+$CMP AT24CS32-STUM
+D I2C Serial EEPROM, 32Kb (4096x8) with Unique Serial Number, SOT-23-5
+K I2C Serial EEPROM Nonvolatile Memory
+F http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8869-SEEPROM-AT24CS32-Datasheet.pdf
+$ENDCMP
+#
 #End Doc Library

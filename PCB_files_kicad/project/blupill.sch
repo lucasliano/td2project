@@ -21219,7 +21219,7 @@ AR Path="/60FADDA4" Ref="U?"  Part="1"
 AR Path="/60FAC4BE/60FADDA4" Ref="U4"  Part="1" 
 F 0 "U4" H 4575 4415 50  0000 C CNN
 F 1 "BluePill_Connector" H 4575 4324 50  0000 C CNN
-F 2 "" H 4550 4250 50  0001 C CNN
+F 2 "mylib:bluepill" H 4550 4250 50  0001 C CNN
 F 3 "" H 4550 4250 50  0001 C CNN
 	1    4550 2750
 	1    0    0    -1  
