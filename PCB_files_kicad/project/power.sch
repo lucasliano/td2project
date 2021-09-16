@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 3
 Title "Sistema de Alarma"
-Date "2021-07-23"
-Rev "v1.2"
+Date "2021-09-15"
+Rev "v1.3"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -159,9 +159,9 @@ L Device:Q_PMOS_GDS Q1
 U 1 1 61025D08
 P 5650 3100
 F 0 "Q1" V 5550 2950 50  0000 C CNN
-F 1 "IRF7240PBF" V 5600 3450 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:TO-252-2" H 5850 3200 50  0001 C CNN
-F 3 "https://pdf1.alldatasheet.es/datasheet-pdf/view/68328/IRF/IRF9540N.html" H 5650 3100 50  0001 C CNN
+F 1 "Irf9z20" V 5550 3300 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 5850 3200 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/90121/sihf9z20.pdf" H 5650 3100 50  0001 C CNN
 F 4 "" H 5650 3100 50  0001 C CNN "Mouser Link"
 F 5 "ver en electrocomponentes!" H 5650 3100 50  0001 C CNN "Mouser Number"
 F 6 "" H 5650 3100 50  0001 C CNN "Part Number"
@@ -957,8 +957,8 @@ F 3 "~" H 4000 3750 50  0001 C CNN
 	1    4000 3750
 	1    0    0    -1  
 $EndComp
-Text Notes 5350 3500 0    50   ~ 0
--4.5v > VGS
+Text Notes 5400 3500 0    30   ~ 0
+|VGS(ON)| > |-3.7v|
 $Comp
 L Device:R_US R?
 U 1 1 61443227
@@ -2517,4 +2517,48 @@ D5 D4 4C 66 39 D6 7F 31 41 13 54 17 8D D5 38 26 A8 35 A9 99 8C 63 5C C7 95 B0 E7
 44 AE 42 60 82 
 EndData
 $EndBitmap
+$Comp
+L Connector:TestPoint TP1
+U 1 1 6136A15D
+P 3450 2450
+F 0 "TP1" H 3508 2568 50  0000 L CNN
+F 1 "PowerSupply" H 3500 2650 50  0000 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 3650 2450 50  0001 C CNN
+F 3 "~" H 3650 2450 50  0001 C CNN
+	1    3450 2450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:TestPoint TP2
+U 1 1 6136C229
+P 5100 3200
+F 0 "TP2" H 5158 3318 50  0000 L CNN
+F 1 "Batt" H 5150 3250 50  0000 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 5300 3200 50  0001 C CNN
+F 3 "~" H 5300 3200 50  0001 C CNN
+	1    5100 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:TestPoint TP3
+U 1 1 613711A3
+P 6050 3200
+F 0 "TP3" H 6108 3318 50  0000 L CNN
+F 1 "Qdrain" H 6100 3250 50  0000 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 6250 3200 50  0001 C CNN
+F 3 "~" H 6250 3200 50  0001 C CNN
+	1    6050 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:TestPoint TP4
+U 1 1 61377A4F
+P 9400 3700
+F 0 "TP4" H 9458 3818 50  0000 L CNN
+F 1 "out5v" H 9450 3750 50  0000 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 9600 3700 50  0001 C CNN
+F 3 "~" H 9600 3700 50  0001 C CNN
+	1    9400 3700
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

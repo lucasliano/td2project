@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 3
 Title "Sistema de Alarma"
-Date "2021-07-23"
+Date "2021-09-15"
 Rev "v1.2"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
@@ -722,16 +722,12 @@ Text Notes 8750 5600 0    59   ~ 12
 BLUETOOTH
 Text Notes 7250 6050 0    50   ~ 0
 Nota: Estan al reves TX y RX, porque en el HC06 la indicación es que el\nRX es el de entrada, es decir que se conecta con nuestro TX.
-Wire Wire Line
-	5250 4800 5650 4800
 Text Label 5650 4800 2    50   ~ 0
 I2C1_SCL
 Text Label 6800 5350 0    50   ~ 0
 I2C1_SCL
 Wire Wire Line
 	6800 5350 7250 5350
-Wire Wire Line
-	5250 4650 5650 4650
 Text Label 5650 4650 2    50   ~ 0
 I2C1_SDA
 Text Label 6800 5250 0    50   ~ 0
@@ -966,4 +962,60 @@ F 3 "" H 4150 7050 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 NoConn ~ 8700 2150
+$Comp
+L Device:R_US R12
+U 1 1 613E9F6B
+P 6050 4450
+F 0 "R12" H 6118 4496 50  0000 L CNN
+F 1 "2k2" H 6118 4405 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6090 4440 50  0001 C CNN
+F 3 "~" H 6050 4450 50  0001 C CNN
+	1    6050 4450
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R13
+U 1 1 613EBFB6
+P 6350 4450
+F 0 "R13" H 6418 4496 50  0000 L CNN
+F 1 "2k2" H 6418 4405 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6390 4440 50  0001 C CNN
+F 3 "~" H 6350 4450 50  0001 C CNN
+	1    6350 4450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6050 4650 6050 4600
+Wire Wire Line
+	5250 4650 6050 4650
+Wire Wire Line
+	6350 4800 6350 4600
+Wire Wire Line
+	5250 4800 6350 4800
+Wire Wire Line
+	6050 4300 6050 4200
+Wire Wire Line
+	6350 4300 6350 4200
+$Comp
+L power:+5V #PWR0141
+U 1 1 61405059
+P 6050 4200
+F 0 "#PWR0141" H 6050 4050 50  0001 C CNN
+F 1 "+5V" H 6065 4373 50  0000 C CNN
+F 2 "" H 6050 4200 50  0001 C CNN
+F 3 "" H 6050 4200 50  0001 C CNN
+	1    6050 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR0142
+U 1 1 61406B09
+P 6350 4200
+F 0 "#PWR0142" H 6350 4050 50  0001 C CNN
+F 1 "+5V" H 6365 4373 50  0000 C CNN
+F 2 "" H 6350 4200 50  0001 C CNN
+F 3 "" H 6350 4200 50  0001 C CNN
+	1    6350 4200
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

@@ -5,7 +5,7 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 3
 Title "Sistema de Alarma"
-Date "2021-07-23"
+Date "2021-09-15"
 Rev "v1.2"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
