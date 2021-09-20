@@ -228,7 +228,7 @@ U 1 1 613F08DD
 P 3000 1950
 F 0 "J2" H 3150 1950 50  0000 C CNN
 F 1 "S1" H 3150 2050 50  0000 C CNN
-F 2 "TerminalBlock:TerminalBlock_bornier-3_P5.08mm" H 3000 1950 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 3000 1950 50  0001 C CNN
 F 3 "~" H 3000 1950 50  0001 C CNN
 	1    3000 1950
 	-1   0    0    -1  
@@ -239,7 +239,7 @@ U 1 1 613F25E6
 P 3000 2550
 F 0 "J3" H 3150 2650 50  0000 C CNN
 F 1 "S2" H 3150 2550 50  0000 C CNN
-F 2 "TerminalBlock:TerminalBlock_bornier-3_P5.08mm" H 3000 2550 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 3000 2550 50  0001 C CNN
 F 3 "~" H 3000 2550 50  0001 C CNN
 	1    3000 2550
 	-1   0    0    -1  
@@ -323,7 +323,7 @@ L Device:R_US R1
 U 1 1 61439C69
 P 5900 2600
 F 0 "R1" V 5695 2600 50  0000 C CNN
-F 1 "100" V 5786 2600 50  0000 C CNN
+F 1 "150" V 5786 2600 50  0000 C CNN
 F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 5940 2590 50  0001 C CNN
 F 3 "~" H 5900 2600 50  0001 C CNN
 	1    5900 2600
@@ -354,7 +354,7 @@ L Device:R_US R2
 U 1 1 61443146
 P 6600 2750
 F 0 "R2" V 6395 2750 50  0000 C CNN
-F 1 "100" V 6486 2750 50  0000 C CNN
+F 1 "150" V 6486 2750 50  0000 C CNN
 F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6640 2740 50  0001 C CNN
 F 3 "~" H 6600 2750 50  0001 C CNN
 	1    6600 2750
@@ -480,7 +480,7 @@ U 1 1 6141445D
 P 7450 5150
 F 0 "J5" H 7422 5124 50  0000 R CNN
 F 1 "Display" H 7422 5033 50  0000 R CNN
-F 2 "TerminalBlock:TerminalBlock_bornier-4_P5.08mm" H 7450 5150 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 7450 5150 50  0001 C CNN
 F 3 "~" H 7450 5150 50  0001 C CNN
 	1    7450 5150
 	-1   0    0    -1  
@@ -713,7 +713,7 @@ U 1 1 6157B666
 P 9000 4950
 F 0 "J6" H 9150 4950 50  0000 C CNN
 F 1 "HC06" H 9150 4850 50  0000 C CNN
-F 2 "TerminalBlock:TerminalBlock_bornier-4_P5.08mm" H 9000 4950 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x04_P2.54mm_Vertical" H 9000 4950 50  0001 C CNN
 F 3 "~" H 9000 4950 50  0001 C CNN
 	1    9000 4950
 	1    0    0    -1  

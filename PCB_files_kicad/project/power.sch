@@ -159,7 +159,7 @@ L Device:Q_PMOS_GDS Q1
 U 1 1 61025D08
 P 5650 3100
 F 0 "Q1" V 5550 2950 50  0000 C CNN
-F 1 "Irf9z20" V 5550 3300 50  0000 C CNN
+F 1 "IRF9Z20" V 5550 3300 50  0000 C CNN
 F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 5850 3200 50  0001 C CNN
 F 3 "https://www.vishay.com/docs/90121/sihf9z20.pdf" H 5650 3100 50  0001 C CNN
 F 4 "" H 5650 3100 50  0001 C CNN "Mouser Link"
@@ -203,7 +203,7 @@ P 6050 3900
 AR Path="/60FAC4BE/61045CAF" Ref="C?"  Part="1" 
 AR Path="/60FFCFF1/61045CAF" Ref="C3"  Part="1" 
 F 0 "C3" H 6100 4000 50  0000 L CNN
-F 1 "22uF-X5R" H 6100 3800 50  0000 L CNN
+F 1 "22uF" H 6100 3800 50  0000 L CNN
 F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 6088 3750 50  0001 C CNN
 F 3 "~" H 6050 3900 50  0001 C CNN
 	1    6050 3900
@@ -463,8 +463,6 @@ Text Notes 9550 4650 0    50   ~ 0
 Power Indicator Led
 Text HLabel 9950 3700 2    50   Output ~ 0
 OUTPUT_5V
-Text Notes 1200 7650 0    50   ~ 10
-Circuit reference: https://www.youtube.com/watch?v=GRd9uTwg7r4
 Wire Wire Line
 	4850 2450 4850 2100
 Wire Wire Line
@@ -2561,4 +2559,6 @@ F 3 "~" H 9600 3700 50  0001 C CNN
 	1    9400 3700
 	1    0    0    -1  
 $EndComp
+Text Notes 1200 7650 0    50   ~ 10
+Circuit reference: https://www.youtube.com/watch?v=GRd9uTwg7r4
 $EndSCHEMATC
