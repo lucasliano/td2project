@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 3
 Title "Sistema de Alarma"
-Date "2021-09-15"
-Rev "v1.3"
+Date "2021-09-23"
+Rev "v1.4"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -23,7 +23,7 @@ AR Path="/60FAC4BE/61001D36" Ref="C?"  Part="1"
 AR Path="/60FFCFF1/61001D36" Ref="C1"  Part="1" 
 F 0 "C1" H 2450 3850 50  0000 L CNN
 F 1 "10uF" H 2400 3650 50  0000 L CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 2638 3600 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 2638 3600 50  0001 C CNN
 F 3 "~" H 2600 3750 50  0001 C CNN
 	1    2600 3750
 	1    0    0    -1  
@@ -140,7 +140,7 @@ AR Path="/60FAC4BE/61011C34" Ref="R?"  Part="1"
 AR Path="/60FFCFF1/61011C34" Ref="R4"  Part="1" 
 F 0 "R4" H 4918 2796 50  0000 L CNN
 F 1 "10k" H 4918 2705 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 4890 2740 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 4890 2740 50  0001 C CNN
 F 3 "~" H 4850 2750 50  0001 C CNN
 	1    4850 2750
 	1    0    0    -1  
@@ -189,7 +189,7 @@ AR Path="/60FAC4BE/6102A554" Ref="C?"  Part="1"
 AR Path="/60FFCFF1/6102A554" Ref="C5"  Part="1" 
 F 0 "C5" H 8500 3900 50  0000 L CNN
 F 1 "22uF" H 8500 3700 50  0000 L CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 8488 3650 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 8488 3650 50  0001 C CNN
 F 3 "~" H 8450 3800 50  0001 C CNN
 	1    8450 3800
 	1    0    0    -1  
@@ -204,7 +204,7 @@ AR Path="/60FAC4BE/61045CAF" Ref="C?"  Part="1"
 AR Path="/60FFCFF1/61045CAF" Ref="C3"  Part="1" 
 F 0 "C3" H 6100 4000 50  0000 L CNN
 F 1 "22uF" H 6100 3800 50  0000 L CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 6088 3750 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 6088 3750 50  0001 C CNN
 F 3 "~" H 6050 3900 50  0001 C CNN
 	1    6050 3900
 	1    0    0    -1  
@@ -398,7 +398,7 @@ AR Path="/60FAC4BE/61001D30" Ref="R?"  Part="1"
 AR Path="/60FFCFF1/61001D30" Ref="R3"  Part="1" 
 F 0 "R3" H 4218 4146 50  0000 L CNN
 F 1 "2.4k" H 4218 4055 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 4190 4090 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 4190 4090 50  0001 C CNN
 F 3 "~" H 4150 4100 50  0001 C CNN
 	1    4150 4100
 	-1   0    0    1   
@@ -427,7 +427,7 @@ AR Path="/60FAC4BE/6124D4A7" Ref="R?"  Part="1"
 AR Path="/60FFCFF1/6124D4A7" Ref="R7"  Part="1" 
 F 0 "R7" H 9550 4100 50  0000 L CNN
 F 1 "150" H 9550 4000 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 9440 4040 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 9440 4040 50  0001 C CNN
 F 3 "" H 9400 4050 50  0001 C CNN
 F 4 "" H 9400 4050 50  0001 C CNN "Mouser Link"
 F 5 "" H 9400 4050 50  0001 C CNN "Mouser Number"
@@ -553,7 +553,7 @@ AR Path="/60FAC4BE/612CF008" Ref="C?"  Part="1"
 AR Path="/60FFCFF1/612CF008" Ref="C2"  Part="1" 
 F 0 "C2" H 4950 3700 50  0000 L CNN
 F 1 "10uF" H 4900 3450 50  0000 L CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 5138 3450 50  0001 C CNN
+F 2 "Capacitor_THT:CP_Radial_D5.0mm_P2.50mm" H 5138 3450 50  0001 C CNN
 F 3 "~" H 5100 3600 50  0001 C CNN
 	1    5100 3600
 	1    0    0    -1  
@@ -965,7 +965,7 @@ AR Path="/60FAC4BE/61443227" Ref="R?"  Part="1"
 AR Path="/60FFCFF1/61443227" Ref="R10"  Part="1" 
 F 0 "R10" H 8100 3650 50  0000 L CNN
 F 1 "16k" H 8100 3550 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 8040 3590 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 8040 3590 50  0001 C CNN
 F 3 "" H 8000 3600 50  0001 C CNN
 F 4 "" H 8000 3600 50  0001 C CNN "Mouser Link"
 F 5 "" H 8000 3600 50  0001 C CNN "Mouser Number"
@@ -981,7 +981,7 @@ AR Path="/60FAC4BE/614470CE" Ref="R?"  Part="1"
 AR Path="/60FFCFF1/614470CE" Ref="R11"  Part="1" 
 F 0 "R11" H 8100 4050 50  0000 L CNN
 F 1 "2k2" H 8100 3950 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 8040 3990 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 8040 3990 50  0001 C CNN
 F 3 "" H 8000 4000 50  0001 C CNN
 F 4 "" H 8000 4000 50  0001 C CNN "Mouser Link"
 F 5 "" H 8000 4000 50  0001 C CNN "Mouser Number"

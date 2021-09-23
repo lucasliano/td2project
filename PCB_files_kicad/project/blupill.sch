@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 3
 Title "Sistema de Alarma"
-Date "2021-09-15"
-Rev "v1.2"
+Date "2021-09-23"
+Rev "v1.4"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -21329,9 +21329,9 @@ Wire Wire Line
 	4050 2900 3550 2900
 Wire Wire Line
 	4050 2750 3550 2750
-Text HLabel 3550 2900 0    59   Output ~ 0
-L3_GPIO
 Text HLabel 3550 2750 0    59   Output ~ 0
+L3_GPIO
+Text HLabel 3550 2900 0    59   Output ~ 0
 L4_GPIO
 Wire Wire Line
 	5100 2150 5600 2150

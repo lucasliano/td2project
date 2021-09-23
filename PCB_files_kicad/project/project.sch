@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 3
 Title "Sistema de Alarma"
-Date "2021-09-15"
-Rev "v1.2"
+Date "2021-09-23"
+Rev "v1.4"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -324,7 +324,7 @@ U 1 1 61439C69
 P 5900 2600
 F 0 "R1" V 5695 2600 50  0000 C CNN
 F 1 "150" V 5786 2600 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 5940 2590 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 5940 2590 50  0001 C CNN
 F 3 "~" H 5900 2600 50  0001 C CNN
 	1    5900 2600
 	0    1    1    0   
@@ -355,7 +355,7 @@ U 1 1 61443146
 P 6600 2750
 F 0 "R2" V 6395 2750 50  0000 C CNN
 F 1 "150" V 6486 2750 50  0000 C CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6640 2740 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6640 2740 50  0001 C CNN
 F 3 "~" H 6600 2750 50  0001 C CNN
 	1    6600 2750
 	0    1    1    0   
@@ -851,7 +851,7 @@ U 1 1 6121281F
 P 6350 1450
 F 0 "R5" H 6418 1496 50  0000 L CNN
 F 1 "2k" H 6418 1405 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6390 1440 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6390 1440 50  0001 C CNN
 F 3 "~" H 6350 1450 50  0001 C CNN
 	1    6350 1450
 	1    0    0    -1  
@@ -862,7 +862,7 @@ U 1 1 6121B8A6
 P 6350 1850
 F 0 "R6" H 6418 1896 50  0000 L CNN
 F 1 "3k" H 6418 1805 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6390 1840 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6390 1840 50  0001 C CNN
 F 3 "~" H 6350 1850 50  0001 C CNN
 	1    6350 1850
 	1    0    0    -1  
@@ -873,7 +873,7 @@ U 1 1 612224E3
 P 6800 1450
 F 0 "R8" H 6868 1496 50  0000 L CNN
 F 1 "2k" H 6868 1405 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6840 1440 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6840 1440 50  0001 C CNN
 F 3 "~" H 6800 1450 50  0001 C CNN
 	1    6800 1450
 	1    0    0    -1  
@@ -884,7 +884,7 @@ U 1 1 612224E9
 P 6800 1850
 F 0 "R9" H 6868 1896 50  0000 L CNN
 F 1 "3k" H 6868 1805 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6840 1840 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6840 1840 50  0001 C CNN
 F 3 "~" H 6800 1850 50  0001 C CNN
 	1    6800 1850
 	1    0    0    -1  
@@ -968,7 +968,7 @@ U 1 1 613E9F6B
 P 6050 4450
 F 0 "R12" H 6118 4496 50  0000 L CNN
 F 1 "2k2" H 6118 4405 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6090 4440 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6090 4440 50  0001 C CNN
 F 3 "~" H 6050 4450 50  0001 C CNN
 	1    6050 4450
 	1    0    0    -1  
@@ -979,7 +979,7 @@ U 1 1 613EBFB6
 P 6350 4450
 F 0 "R13" H 6418 4496 50  0000 L CNN
 F 1 "2k2" H 6418 4405 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0414_L11.9mm_D4.5mm_P20.32mm_Horizontal" V 6390 4440 50  0001 C CNN
+F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6390 4440 50  0001 C CNN
 F 3 "~" H 6350 4450 50  0001 C CNN
 	1    6350 4450
 	1    0    0    -1  
