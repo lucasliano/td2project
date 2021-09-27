@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 3
 Title "Sistema de Alarma"
-Date "2021-09-23"
-Rev "v1.4"
+Date "2021-09-26"
+Rev "v1.5"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -611,7 +611,7 @@ U 1 1 61513D7E
 P 8800 3700
 F 0 "BZ1" H 8952 3729 50  0000 L CNN
 F 1 "Buzzer" H 8952 3638 50  0000 L CNN
-F 2 "Buzzer_Beeper:Buzzer_12x9.5RM7.6" V 8775 3800 50  0001 C CNN
+F 2 "mylib:Batt" V 8775 3800 50  0001 C CNN
 F 3 "~" V 8775 3800 50  0001 C CNN
 	1    8800 3700
 	1    0    0    -1  
@@ -734,20 +734,6 @@ Text Label 6800 5250 0    50   ~ 0
 I2C1_SDA
 Wire Wire Line
 	6800 5250 7250 5250
-$Comp
-L myLib:AT24CS01-STUM U1
-U 1 1 615E11DA
-P 8300 2150
-F 0 "U1" H 8100 2400 50  0000 R CNN
-F 1 "24AA64FT-I/OT" H 7950 2050 50  0000 R CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-6_Handsoldering" H 8300 2150 50  0001 C CNN
-F 3 "https://ar.mouser.com/datasheet/2/268/22154B-1221207.pdf" H 8300 2150 50  0001 C CNN
-F 4 "https://ar.mouser.com/ProductDetail/Microchip-Technology/24AA64FT-I-OT?qs=WqWCsLCZBkrRsEB9Ux8Tvw%3D%3D" H 8300 2150 50  0001 C CNN "Mouser Link"
-F 5 "579-24AA64FT-I/OT " H 8300 2150 50  0001 C CNN "Mouser Number"
-F 6 "24AA64FT-I/OT " H 8300 2150 50  0001 C CNN "Part Number"
-	1    8300 2150
-	-1   0    0    -1  
-$EndComp
 Wire Notes Line
 	9300 2900 7150 2900
 Wire Notes Line
@@ -794,7 +780,7 @@ Wire Wire Line
 Text Notes 8850 2850 0    59   ~ 12
 EEPROM
 Text Notes 7200 2850 0    47   Italic 0
-Nota: WP -> GND = Write Enable
+Nota: WC -> GND = Write Enable
 Text Label 7450 2150 0    50   ~ 0
 I2C1_SCL
 Wire Wire Line
@@ -850,7 +836,7 @@ L Device:R_US R5
 U 1 1 6121281F
 P 6350 1450
 F 0 "R5" H 6418 1496 50  0000 L CNN
-F 1 "2k" H 6418 1405 50  0000 L CNN
+F 1 "2k2" H 6418 1405 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6390 1440 50  0001 C CNN
 F 3 "~" H 6350 1450 50  0001 C CNN
 	1    6350 1450
@@ -861,7 +847,7 @@ L Device:R_US R6
 U 1 1 6121B8A6
 P 6350 1850
 F 0 "R6" H 6418 1896 50  0000 L CNN
-F 1 "3k" H 6418 1805 50  0000 L CNN
+F 1 "3k3" H 6418 1805 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6390 1840 50  0001 C CNN
 F 3 "~" H 6350 1850 50  0001 C CNN
 	1    6350 1850
@@ -872,7 +858,7 @@ L Device:R_US R8
 U 1 1 612224E3
 P 6800 1450
 F 0 "R8" H 6868 1496 50  0000 L CNN
-F 1 "2k" H 6868 1405 50  0000 L CNN
+F 1 "2k2" H 6868 1405 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6840 1440 50  0001 C CNN
 F 3 "~" H 6800 1450 50  0001 C CNN
 	1    6800 1450
@@ -883,7 +869,7 @@ L Device:R_US R9
 U 1 1 612224E9
 P 6800 1850
 F 0 "R9" H 6868 1896 50  0000 L CNN
-F 1 "3k" H 6868 1805 50  0000 L CNN
+F 1 "3k3" H 6868 1805 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 6840 1840 50  0001 C CNN
 F 3 "~" H 6800 1850 50  0001 C CNN
 	1    6800 1850
@@ -961,7 +947,6 @@ F 3 "" H 4150 7050 50  0001 C CNN
 	1    4150 7050
 	1    0    0    -1  
 $EndComp
-NoConn ~ 8700 2150
 $Comp
 L Device:R_US R12
 U 1 1 613E9F6B
@@ -1018,4 +1003,57 @@ F 3 "" H 6350 4200 50  0001 C CNN
 	1    6350 4200
 	1    0    0    -1  
 $EndComp
+$Comp
+L myLib:M24C02 U1
+U 1 1 6151E4DA
+P 8300 2150
+F 0 "U1" H 8050 1900 50  0000 C CNN
+F 1 "M24C02" H 8100 2400 50  0000 C CNN
+F 2 "Package_DIP:DIP-8_W7.62mm" H 8300 2500 50  0001 C CNN
+F 3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/b0/d8/50/40/5a/85/49/6f/DM00071904.pdf/files/DM00071904.pdf/jcr:content/translations/en.DM00071904.pdf" H 8350 1650 50  0001 C CNN
+	1    8300 2150
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	8700 2050 8850 2050
+Wire Wire Line
+	8850 2050 8850 2150
+Wire Wire Line
+	8850 2250 8700 2250
+Wire Wire Line
+	8700 2150 8850 2150
+Connection ~ 8850 2150
+Wire Wire Line
+	8850 2150 8850 2250
+Wire Wire Line
+	9000 2150 9000 2400
+Wire Wire Line
+	8850 2150 9000 2150
+$Comp
+L power:GND #PWR0143
+U 1 1 6152DE2B
+P 9000 2400
+F 0 "#PWR0143" H 9000 2150 50  0001 C CNN
+F 1 "GND" H 9005 2227 50  0001 C CNN
+F 2 "" H 9000 2400 50  0001 C CNN
+F 3 "" H 9000 2400 50  0001 C CNN
+	1    9000 2400
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:TestPoint TP5
+U 1 1 615EDBC5
+P 5900 1800
+F 0 "TP5" H 5850 2000 50  0000 L CNN
+F 1 "TestPoint" H 5958 1827 50  0001 L CNN
+F 2 "TestPoint:TestPoint_THTPad_D2.0mm_Drill1.0mm" H 6100 1800 50  0001 C CNN
+F 3 "~" H 6100 1800 50  0001 C CNN
+	1    5900 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5750 1900 5900 1900
+Wire Wire Line
+	5900 1900 5900 1800
+Connection ~ 5750 1900
 $EndSCHEMATC

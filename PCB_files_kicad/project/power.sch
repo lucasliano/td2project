@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 3
 Title "Sistema de Alarma"
-Date "2021-09-23"
-Rev "v1.4"
+Date "2021-09-26"
+Rev "v1.5"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -276,12 +276,12 @@ L Device:D_Schottky D3
 U 1 1 6106C095
 P 6150 2450
 F 0 "D3" H 6150 2233 50  0000 C CNN
-F 1 "CDBU0130L - 350mV" H 6150 2324 50  0000 C CNN
-F 2 "Diode_THT:D_DO-15_P12.70mm_Horizontal" H 6150 2450 50  0001 C CNN
-F 3 "https://ar.mouser.com/datasheet/2/80/CDBU0130L_HF_RevA748574-2490037.pdf" H 6150 2450 50  0001 C CNN
-F 4 "https://ar.mouser.com/ProductDetail/Comchip-Technology/CDBU0130L?qs=tw%252BuQ%2FB6PO2Mup5%252Bk7mubQ%3D%3D" H 6150 2450 50  0001 C CNN "Mouser Link"
-F 5 "750-CDBU0130L " H 6150 2450 50  0001 C CNN "Mouser Number"
-F 6 "CDBU0130L " H 6150 2450 50  0001 C CNN "Part Number"
+F 1 "1N5822 - 500mV" H 6150 2324 50  0000 C CNN
+F 2 "Diode_THT:D_DO-201AD_P15.24mm_Horizontal" H 6150 2450 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/88526/1n5820.pdf" H 6150 2450 50  0001 C CNN
+F 4 "" H 6150 2450 50  0001 C CNN "Mouser Link"
+F 5 "" H 6150 2450 50  0001 C CNN "Mouser Number"
+F 6 "" H 6150 2450 50  0001 C CNN "Part Number"
 	1    6150 2450
 	-1   0    0    1   
 $EndComp
@@ -397,14 +397,14 @@ P 4150 4100
 AR Path="/60FAC4BE/61001D30" Ref="R?"  Part="1" 
 AR Path="/60FFCFF1/61001D30" Ref="R3"  Part="1" 
 F 0 "R3" H 4218 4146 50  0000 L CNN
-F 1 "2.4k" H 4218 4055 50  0000 L CNN
+F 1 "2k2" H 4218 4055 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 4190 4090 50  0001 C CNN
 F 3 "~" H 4150 4100 50  0001 C CNN
 	1    4150 4100
 	-1   0    0    1   
 $EndComp
 Text Notes 2800 5000 0    50   ~ 0
-Battery Charge Module @ 500mA\n\n
+Battery Charge Module @ 545mA\n\n
 $Comp
 L Device:LED D4
 U 1 1 6124CD6D
@@ -521,9 +521,9 @@ L Device:D_Schottky D5
 U 1 1 611EC7A8
 P 7700 3200
 F 0 "D5" H 7700 2983 50  0000 C CNN
-F 1 "SS34" H 7700 3074 50  0000 C CNN
-F 2 "Diode_THT:D_DO-15_P12.70mm_Horizontal" H 7700 3200 50  0001 C CNN
-F 3 "" H 7700 3200 50  0001 C CNN
+F 1 "1N5822 - 500mV" H 7700 3074 50  0000 C CNN
+F 2 "Diode_THT:D_DO-201AD_P15.24mm_Horizontal" H 7700 3200 50  0001 C CNN
+F 3 "https://www.vishay.com/docs/88526/1n5820.pdf" H 7700 3200 50  0001 C CNN
 F 4 "" H 7700 3200 50  0001 C CNN "Mouser Link"
 F 5 "" H 7700 3200 50  0001 C CNN "Mouser Number"
 F 6 "" H 7700 3200 50  0001 C CNN "Part Number"
@@ -964,7 +964,7 @@ P 8000 3600
 AR Path="/60FAC4BE/61443227" Ref="R?"  Part="1" 
 AR Path="/60FFCFF1/61443227" Ref="R10"  Part="1" 
 F 0 "R10" H 8100 3650 50  0000 L CNN
-F 1 "16k" H 8100 3550 50  0000 L CNN
+F 1 "15k" H 8100 3550 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal" V 8040 3590 50  0001 C CNN
 F 3 "" H 8000 3600 50  0001 C CNN
 F 4 "" H 8000 3600 50  0001 C CNN "Mouser Link"
