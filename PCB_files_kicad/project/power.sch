@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 2 3
 Title "Sistema de Alarma"
-Date "2021-09-26"
-Rev "v1.5"
+Date "2021-09-27"
+Rev "v1.6"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -29,26 +29,11 @@ F 3 "~" H 2600 3750 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1800 3450 1800 3350
-Wire Wire Line
 	1850 3850 1500 3850
 Wire Wire Line
 	1850 3550 1850 3850
 Wire Wire Line
 	1800 3550 1850 3550
-$Comp
-L Connector:USB_B_Micro J?
-U 1 1 61001D56
-P 1500 3350
-AR Path="/60FAC4BE/61001D56" Ref="J?"  Part="1" 
-AR Path="/60FFCFF1/61001D56" Ref="J8"  Part="1" 
-F 0 "J8" H 1557 3817 50  0000 C CNN
-F 1 "USB_B_Micro" H 1557 3726 50  0000 C CNN
-F 2 "Connector_USB:USB_Micro-B_Amphenol_10104110_Horizontal" H 1650 3300 50  0001 C CNN
-F 3 "~" H 1650 3300 50  0001 C CNN
-	1    1500 3350
-	1    0    0    -1  
-$EndComp
 $Comp
 L power:Earth #PWR?
 U 1 1 61001D5C
@@ -2561,4 +2546,19 @@ F 3 "~" H 9600 3700 50  0001 C CNN
 $EndComp
 Text Notes 1200 7650 0    50   ~ 10
 Circuit reference: https://www.youtube.com/watch?v=GRd9uTwg7r4
+$Comp
+L Connector:USB_B_Micro J?
+U 1 1 61001D56
+P 1500 3350
+AR Path="/60FAC4BE/61001D56" Ref="J?"  Part="1" 
+AR Path="/60FFCFF1/61001D56" Ref="J8"  Part="1" 
+F 0 "J8" H 1557 3817 50  0000 C CNN
+F 1 "USB_B_Micro" H 1557 3726 50  0000 C CNN
+F 2 "Connector_USB:USB_Micro-B_Amphenol_10104110_Horizontal" H 1650 3300 50  0001 C CNN
+F 3 "~" H 1650 3300 50  0001 C CNN
+	1    1500 3350
+	1    0    0    -1  
+$EndComp
+NoConn ~ 1800 3450
+NoConn ~ 1800 3350
 $EndSCHEMATC
