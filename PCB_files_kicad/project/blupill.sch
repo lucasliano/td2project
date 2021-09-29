@@ -5,8 +5,8 @@ $Descr A4 11693 8268
 encoding utf-8
 Sheet 3 3
 Title "Sistema de Alarma"
-Date "2021-09-27"
-Rev "v1.6"
+Date "2021-09-29"
+Rev "v1.7"
 Comp "Proyecto Técnicas Digitales II - Grupo N°4"
 Comment1 "Liaño, Lucas"
 Comment2 "Golob, Lautaro"
@@ -21216,8 +21216,8 @@ L myLib:BluePill_Connector U?
 U 1 1 60FADDA4
 P 4550 2750
 AR Path="/60FADDA4" Ref="U?"  Part="1" 
-AR Path="/60FAC4BE/60FADDA4" Ref="U4"  Part="1" 
-F 0 "U4" H 4575 4415 50  0000 C CNN
+AR Path="/60FAC4BE/60FADDA4" Ref="U5"  Part="1" 
+F 0 "U5" H 4575 4415 50  0000 C CNN
 F 1 "BluePill_Connector" H 4575 4324 50  0000 C CNN
 F 2 "mylib:bluepill" H 4550 4250 50  0001 C CNN
 F 3 "" H 4550 4250 50  0001 C CNN
@@ -21256,10 +21256,10 @@ Connection ~ 3700 4250
 Wire Wire Line
 	3700 4250 3700 4550
 $Comp
-L power:GND #PWR0117
+L power:GND #PWR044
 U 1 1 612C500D
 P 3700 4550
-F 0 "#PWR0117" H 3700 4300 50  0001 C CNN
+F 0 "#PWR044" H 3700 4300 50  0001 C CNN
 F 1 "GND" H 3705 4377 50  0000 C CNN
 F 2 "" H 3700 4550 50  0001 C CNN
 F 3 "" H 3700 4550 50  0001 C CNN
@@ -21269,10 +21269,10 @@ $EndComp
 Wire Wire Line
 	6300 1550 6300 1650
 $Comp
-L power:GND #PWR0118
+L power:GND #PWR045
 U 1 1 612C5FE6
 P 6300 1650
-F 0 "#PWR0118" H 6300 1400 50  0001 C CNN
+F 0 "#PWR045" H 6300 1400 50  0001 C CNN
 F 1 "GND" H 6305 1477 50  0000 C CNN
 F 2 "" H 6300 1650 50  0001 C CNN
 F 3 "" H 6300 1650 50  0001 C CNN
