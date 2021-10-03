@@ -32,7 +32,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+//Drivers
+#include "own_drivers.h"
 
+// Otros
+#include "tareas.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

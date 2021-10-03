@@ -51,13 +51,7 @@ SPI_HandleTypeDef hspi2;
 
 UART_HandleTypeDef huart1;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .stack_size = 128 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
+osThreadId defaultTaskHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -70,10 +64,10 @@ static void MX_I2C1_Init(void);
 static void MX_RTC_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USART1_UART_Init(void);
-void StartDefaultTask(void *argument);
+void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
-
+xQueueHandle eeprom_queue;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -118,9 +112,6 @@ int main(void)
 
   /* USER CODE END 2 */
 
-  /* Init scheduler */
-  osKernelInitialize();
-
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
@@ -134,20 +125,63 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  /* add queues, ... */
+  if(!(eeprom_queue = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
+	{
+	  	  Error_Handler();
+	}
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityIdle, 0, 128);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-  /* USER CODE END RTOS_THREADS */
+  if(xTaskCreate(checkear_teclado,
+  		  	  "checkear_teclado",
+  			  128,
+  			  NULL,
+  			  1,
+  			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_rfid,
+			  "detectar_rfid",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_sensores,
+			  "detectar_sensores",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(conexion_bt,
+			  "conexion_bt",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(checkear_power_supply,
+			  "checkear_power_supply",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(escritura_eeprom,
+			  "escritura_eeprom",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(lcd_update,
+			  "lcd_update",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
 
-  /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
-  /* USER CODE END RTOS_EVENTS */
+
+  /* USER CODE END RTOS_THREADS */
 
   /* Start scheduler */
   osKernelStart();
@@ -407,11 +441,21 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7|GPIO_PIN_10, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_3|GPIO_PIN_4
                           |GPIO_PIN_5, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : PC13 */
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA2 PA3 PA5 PA6
                            PA8 PA9 */
@@ -450,7 +494,7 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
@@ -461,7 +505,7 @@ void StartDefaultTask(void *argument)
   /* USER CODE END 5 */
 }
 
- /**
+/**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM1 interrupt took place, inside
   * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
@@ -490,10 +534,13 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+	volatile int32_t i;
+	__disable_irq();
+	while(1)
+	{
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);	//LED Bluepill
+		for(i=0;i<200000; i++);
+	}
   /* USER CODE END Error_Handler_Debug */
 }
 
