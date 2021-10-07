@@ -109,7 +109,8 @@ int main(void)
   MX_SPI2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_Delay(100);
+  MFRC522_Init(&hspi2, SPI_NSS_GPIO_Port, SPI_NSS_Pin);
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -137,48 +138,48 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  if(xTaskCreate(checkear_teclado,
-  		  	  "checkear_teclado",
-  			  128,
+//  if(xTaskCreate(checkear_teclado,
+//  		  	  "checkear_teclado",
+//  			  128,
+//  			  NULL,
+//  			  1,
+//  			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(detectar_sensores,
+//			  "detectar_sensores",
+//			  128,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(conexion_bt,
+//			  "conexion_bt",
+//			  128,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(checkear_power_supply,
+//			  "checkear_power_supply",
+//			  128,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(escritura_eeprom,
+//			  "escritura_eeprom",
+//			  128,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(lcd_update,
+//			  "lcd_update",
+//			  128,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_rfid,
+  			  "detectar_rfid",
+  			  128*4,
   			  NULL,
   			  1,
   			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(detectar_rfid,
-			  "detectar_rfid",
-			  128,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(detectar_sensores,
-			  "detectar_sensores",
-			  128,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(conexion_bt,
-			  "conexion_bt",
-			  128,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(checkear_power_supply,
-			  "checkear_power_supply",
-			  128,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(escritura_eeprom,
-			  "escritura_eeprom",
-			  128,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(lcd_update,
-			  "lcd_update",
-			  128,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
 
 
   /* USER CODE END RTOS_THREADS */
@@ -192,7 +193,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	Error_Handler();
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -212,7 +213,7 @@ void SystemClock_Config(void)
   * in the RCC_OscInitTypeDef structure.
   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.LSIState = RCC_LSI_ON;
@@ -373,11 +374,11 @@ static void MX_SPI2_Init(void)
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_MASTER;
   hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi2.Init.DataSize = SPI_DATASIZE_16BIT;
+  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi2.Init.NSS = SPI_NSS_SOFT;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -450,6 +451,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_3|GPIO_PIN_4
                           |GPIO_PIN_5, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -472,10 +476,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB1 PB10 PB3 PB4
-                           PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_3|GPIO_PIN_4
-                          |GPIO_PIN_5;
+  /*Configure GPIO pins : PB1 PB10 PB12 PB3
+                           PB4 PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_12|GPIO_PIN_3
+                          |GPIO_PIN_4|GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

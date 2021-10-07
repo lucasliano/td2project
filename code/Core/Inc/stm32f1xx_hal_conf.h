@@ -87,7 +87,7 @@
 #endif /* HSE_VALUE */
 
 #if !defined  (HSE_STARTUP_TIMEOUT)
-  #define HSE_STARTUP_TIMEOUT    100U   /*!< Time out for HSE start up, in ms */
+  #define HSE_STARTUP_TIMEOUT    400U   /*!< Time out for HSE start up, in ms */
 #endif /* HSE_STARTUP_TIMEOUT */
 
 /**
@@ -128,7 +128,7 @@
   * @brief This is the HAL system configuration section
   */
 #define  VDD_VALUE                    3300U /*!< Value of VDD in mv */
-#define  TICK_INT_PRIORITY            0U    /*!< tick interrupt priority (lowest by default)  */
+#define  TICK_INT_PRIORITY            15U    /*!< tick interrupt priority (lowest by default)  */
 #define  USE_RTOS                     0U
 #define  PREFETCH_ENABLE              1U
 
