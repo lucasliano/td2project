@@ -29,5 +29,6 @@ fp-info-cache
 
 # Debug folder and stm info
 .metadata
+.launch
 code/.settings
 code/Debug/
