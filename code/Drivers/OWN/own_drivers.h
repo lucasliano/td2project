@@ -14,5 +14,10 @@
 
 #include "Inc/eeprom.h"
 #include "Inc/MFRC522.h"
+#include "Inc/teclado.h"
+#include "Inc/arrebote.h"
+#include "Inc/sensor.h"
+#include "Inc/rtc.h"
+#include "Inc/arrebote.h"
 
 #endif /* __OWN_DRIVERS_H */

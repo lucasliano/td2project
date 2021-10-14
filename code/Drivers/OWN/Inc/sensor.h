@@ -13,6 +13,9 @@
 #include "FreeRTOS.h"
 #include "task.h"
 
+#define Sensor1_Pin GPIO_PIN_9
+#define Sensor1_GPIO_Port GPIOA
+
 #define PUERTO_SENSOR1	GPIOA
 #define PIN_SENSOR1		GPIO_PIN_9
 
@@ -22,6 +25,5 @@
 #define DEMORA_SENSOR	300 //ms
 
 uint8_t leer_sensor(uint8_t);
-void tarea_sensor(void *p);
 
 #endif /* INC_SENSOR_H_ */

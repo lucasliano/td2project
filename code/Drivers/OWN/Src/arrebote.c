@@ -6,7 +6,7 @@
  */
 
 
-#include "arrebote.h"
+#include "main.h"
 
 void inicializar_arrebote(arrebote *s, uint8_t activo_en_cero, uint16_t debounce)
 {

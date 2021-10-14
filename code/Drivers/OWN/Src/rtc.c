@@ -5,7 +5,7 @@
  *      Author: manuel
  */
 
-#include "rtc.h"
+#include "main.h"
 
 extern RTC_HandleTypeDef hrtc;
 
