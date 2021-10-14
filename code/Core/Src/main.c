@@ -98,6 +98,7 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+  HAL_NVIC_SetPriorityGrouping( NVIC_PRIORITYGROUP_4 );
 
   /* USER CODE END SysInit */
 
@@ -138,42 +139,42 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-//  if(xTaskCreate(checkear_teclado,
-//  		  	  "checkear_teclado",
-//  			  128,
-//  			  NULL,
-//  			  1,
-//  			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(detectar_sensores,
-//			  "detectar_sensores",
-//			  128,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(conexion_bt,
-//			  "conexion_bt",
-//			  128,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(checkear_power_supply,
-//			  "checkear_power_supply",
-//			  128,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(escritura_eeprom,
-//			  "escritura_eeprom",
-//			  128,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(lcd_update,
-//			  "lcd_update",
-//			  128,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(checkear_teclado,
+  		  	  "checkear_teclado",
+  			  128,
+  			  NULL,
+  			  1,
+  			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_sensores,
+			  "detectar_sensores",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(conexion_bt,
+			  "conexion_bt",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(checkear_power_supply,
+			  "checkear_power_supply",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(escritura_eeprom,
+			  "escritura_eeprom",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(lcd_update,
+			  "lcd_update",
+			  128,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
   if(xTaskCreate(detectar_rfid,
   			  "detectar_rfid",
   			  128*4,
