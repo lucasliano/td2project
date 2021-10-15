@@ -19,20 +19,13 @@ extern uint8_t clave_ok;
 /* ===========================================*/
 
 void checkear_teclado(void *p)
+/*
+ * ======== checkear_teclado =============
+ * Tarea global.
+ *
+ *
+ */
 {
-	/*
-	 * ======== checkear_teclado =============
-	 * Tarea global.
-	 *
-	 *
-	 * -------- Uso de memoria -------------
-	 * Stack size:
-	 * 				uint8_t i   		-> 8 bytes
-	 * 				uint8_t cardstr[5]  -> 8*5 = 40 bytes
-	 * 				uint8_t estado      -> 8 bytes
-	 * 				========================================
-	 * Total:							-> 56 bytes
-	 */
 	uint8_t tecla[LARGO_CLAVE+1] = {0}; //Cuento el # de cierre
 	uint8_t i=0;
 
@@ -63,27 +56,27 @@ void checkear_teclado(void *p)
 			HAL_GPIO_WritePin(PUERTO_FILA,FILA4,GPIO_PIN_RESET );
 			//Leo las columnas
 			chequear_arrebote(&boton[0][0], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA1));
-					if(hay_flanco_arrebote(&boton[0][0])){
-							tecla[i] = '1';
-							i++;
-					}
+			if(hay_flanco_arrebote(&boton[0][0])){
+					tecla[i] = '1';
+					i++;
+			}
 			chequear_arrebote(&boton[0][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
-					if(hay_flanco_arrebote(&boton[0][1])){
-							tecla[i] = '2';
-							i++;
-					}
+			if(hay_flanco_arrebote(&boton[0][1])){
+					tecla[i] = '2';
+					i++;
+			}
 
 			chequear_arrebote(&boton[0][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
-					if(hay_flanco_arrebote(&boton[0][2]))
-						{
-							tecla[i] = '3';
-							i++;
-						}
+			if(hay_flanco_arrebote(&boton[0][2]))
+				{
+					tecla[i] = '3';
+					i++;
+				}
 			chequear_arrebote(&boton[0][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
-					if(hay_flanco_arrebote(&boton[0][3])){
-							tecla[i] = 'A';
-							i++;
-					}
+			if(hay_flanco_arrebote(&boton[0][3])){
+					tecla[i] = 'A';
+					i++;
+			}
 
 			estado = 1;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
@@ -95,27 +88,27 @@ void checkear_teclado(void *p)
 			HAL_GPIO_WritePin(PUERTO_FILA,FILA4,GPIO_PIN_RESET );
 			//Leo las columnas
 			chequear_arrebote(&boton[1][0], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA1));
-								if(hay_flanco_arrebote(&boton[1][0])){
-										tecla[i] = '4';
-										i++;
-								}
-						chequear_arrebote(&boton[1][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
-								if(hay_flanco_arrebote(&boton[1][1])){
-										tecla[i] = '5';
-										i++;
-								}
+			if(hay_flanco_arrebote(&boton[1][0])){
+					tecla[i] = '4';
+					i++;
+			}
+			chequear_arrebote(&boton[1][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
+			if(hay_flanco_arrebote(&boton[1][1])){
+					tecla[i] = '5';
+					i++;
+			}
 
-						chequear_arrebote(&boton[1][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
-								if(hay_flanco_arrebote(&boton[1][2]))
-									{
-										tecla[i] = '6';
-										i++;
-									}
-						chequear_arrebote(&boton[1][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
-								if(hay_flanco_arrebote(&boton[1][3])){
-										tecla[i] = 'B';
-										i++;
-								}
+			chequear_arrebote(&boton[1][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
+			if(hay_flanco_arrebote(&boton[1][2]))
+				{
+					tecla[i] = '6';
+					i++;
+				}
+			chequear_arrebote(&boton[1][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
+			if(hay_flanco_arrebote(&boton[1][3])){
+					tecla[i] = 'B';
+					i++;
+			}
 			estado = 2;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
 			break;
@@ -126,27 +119,27 @@ void checkear_teclado(void *p)
 			HAL_GPIO_WritePin(PUERTO_FILA,FILA4,GPIO_PIN_RESET );
 			//Leo las columnas
 			chequear_arrebote(&boton[2][0], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA1));
-								if(hay_flanco_arrebote(&boton[2][0])){
-										tecla[i] = '7';
-										i++;
-								}
-						chequear_arrebote(&boton[2][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
-								if(hay_flanco_arrebote(&boton[2][1])){
-										tecla[i] = '8';
-										i++;
-								}
+			if(hay_flanco_arrebote(&boton[2][0])){
+					tecla[i] = '7';
+					i++;
+			}
+			chequear_arrebote(&boton[2][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
+			if(hay_flanco_arrebote(&boton[2][1])){
+					tecla[i] = '8';
+					i++;
+			}
 
-						chequear_arrebote(&boton[2][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
-								if(hay_flanco_arrebote(&boton[2][2]))
-									{
-										tecla[i] = '9';
-										i++;
-									}
-						chequear_arrebote(&boton[2][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
-								if(hay_flanco_arrebote(&boton[2][3])){
-										tecla[i] = 'C';
-										i++;
-								}
+			chequear_arrebote(&boton[2][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
+			if(hay_flanco_arrebote(&boton[2][2]))
+				{
+					tecla[i] = '9';
+					i++;
+				}
+			chequear_arrebote(&boton[2][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
+			if(hay_flanco_arrebote(&boton[2][3])){
+					tecla[i] = 'C';
+					i++;
+			}
 			estado = 3;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
 			break;
@@ -156,34 +149,30 @@ void checkear_teclado(void *p)
 			HAL_GPIO_WritePin(PUERTO_FILA,FILA3,GPIO_PIN_RESET );
 			HAL_GPIO_WritePin(PUERTO_FILA,FILA4,GPIO_PIN_SET );
 			//Leo las columnas
-				chequear_arrebote(&boton[3][0], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA1));
-									if(hay_flanco_arrebote(&boton[3][0])){
-											tecla[i] = '*';
-											i++;
-									}
-							chequear_arrebote(&boton[3][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
-									if(hay_flanco_arrebote(&boton[3][1])){
-											tecla[i] = '0';
-											i++;
-									}
-
-							chequear_arrebote(&boton[3][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
-									if(hay_flanco_arrebote(&boton[3][2]))
-										{
-											tecla[i] = '#';
-											i++;
-										}
-							chequear_arrebote(&boton[3][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
-									if(hay_flanco_arrebote(&boton[3][3])){
-											tecla[i] = 'D';
-											i++;
-									}
+			chequear_arrebote(&boton[3][0], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA1));
+			if(hay_flanco_arrebote(&boton[3][0])){
+					tecla[i] = '*';
+					i++;
+			}
+			chequear_arrebote(&boton[3][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
+			if(hay_flanco_arrebote(&boton[3][1])){
+					tecla[i] = '0';
+					i++;
+			}
+			chequear_arrebote(&boton[3][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
+			if(hay_flanco_arrebote(&boton[3][2]))
+				{
+					tecla[i] = '#';
+					i++;
+				}
+			chequear_arrebote(&boton[3][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
+			if(hay_flanco_arrebote(&boton[3][3])){
+					tecla[i] = 'D';
+					i++;
+			}
 			estado = 0;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
 			break;
-
-
-
 		}
 		vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
 
@@ -206,41 +195,23 @@ void detectar_rfid(void *p)
  * 		GND	 ->		G
  * 		RST	 ->		--
  * 		3.3V -> 	3.3
- *
- * -------- Uso de memoria -------------
- * Stack size:
- * 				uint8_t status 		-> 8 bytes
- * 				uint8_t cardstr[17] -> 8*17 = 136  bytes
- * 				uint8_t id[4]  		-> 8*4 = 32 bytes
- * 				========================================
- * Total:							-> 176 bytes
  */
 {
-	uint8_t status;
-	uint8_t cardstr[MAX_LEN+1];
-	uint8_t id[4];
+
 	while(1)
 	{
-		status = 0;
-		memset(cardstr,0,sizeof(cardstr));
-		status = (uint8_t) MFRC522_Request(PICC_REQIDL, cardstr);
-		if (status == MI_OK)
-		{
-			HAL_Delay(2);
-			MFRC522_Anticoll(cardstr);
-			id[0] = cardstr[0];
-			id[1] = cardstr[1];
-			id[2] = cardstr[2];
-			id[3] = cardstr[3];
-			MFRC522_Halt();
-			HAL_Delay(2);
-		}
+		rfid_toggle_state();
 		vTaskDelay(10);
 	}
-	UNUSED(id); // Esto evita que el compilador tire warnings
 }
 
 void detectar_sensores(void *p)
+/*
+ * ======== detectar_sensores =============
+ * Tarea global.
+ *
+ *
+ */
 {
 	// (Dependiendo del estado de la alarma, debe hacer sonar el buzzer)
 	uint8_t estado=0;

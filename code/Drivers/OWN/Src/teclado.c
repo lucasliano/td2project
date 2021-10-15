@@ -18,7 +18,7 @@ uint8_t chequear_clave(uint8_t *t){
 			return 0;
 	}
 	else
-		return 0;
+	return 0;
 }
 
 
