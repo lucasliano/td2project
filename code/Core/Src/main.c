@@ -18,8 +18,8 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "main.h"
 #include "cmsis_os.h"
+#include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -116,6 +116,7 @@ int main(void)
   HAL_Delay(100);
   MFRC522_Init(&hspi2, SPI_NSS_GPIO_Port, SPI_NSS_Pin);
   init_teclado();
+  init_eeprom(&hi2c1);
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
