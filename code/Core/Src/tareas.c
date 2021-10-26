@@ -284,31 +284,21 @@ void conexion_bt(void *p)
 
 void checkear_power_supply(void *p)
 {
-	// Lectura ADC
-	struct eeprom_message send_msg;
-	struct eeprom_message recv_msg;
-	uint8_t status;
+	uint32_t raw;
+	uint32_t ticks_adc = HAL_GetTick();
 
 	while(1)
 	{
-		send_msg.PID 	= PID_ADC;
-		send_msg.CMD_ID = EEPROM_CMD_READ;
-		send_msg.page 	= 3;
-		for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-			send_msg.data[j] = 0;
-		send_msg.size 	= EEPROM_PAGE_SIZE;
-		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-		if (status == errQUEUE_FULL) Error_Handler();
+		if((HAL_GetTick()-ticks_adc)>= TICKS_ADC_MS)
+		{
+			ticks_adc = HAL_GetTick();
+			raw = get_adc_raw(CHANNEL_POWER_SUPPLY);
+		}
+		vTaskDelay(100);
 
-		do{
-			status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-			vTaskDelay(10);
-		}while(status != pdTRUE);
-
-
-		vTaskDelay(1000);
 	}
 }
+
 
 void manejo_eeprom(void *p)
 /*
@@ -419,8 +409,30 @@ void lcd_update(void *p)
 }
 
 
-//void actualizar_nivel_bateria(void *p)
-//{
-//
-//}
+void actualizar_nivel_bateria(void *p)
+{
+	struct eeprom_message send_msg;
+	struct eeprom_message recv_msg;
+	uint8_t status;
+
+	while(1)
+	{
+		send_msg.PID 	= PID_ADC;
+		send_msg.CMD_ID = EEPROM_CMD_READ;
+		send_msg.page 	= 3;
+		for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+			send_msg.data[j] = 0;
+		send_msg.size 	= EEPROM_PAGE_SIZE;
+		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+		if (status == errQUEUE_FULL) Error_Handler();
+
+		do{
+			status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+			vTaskDelay(10);
+		}while(status != pdTRUE);
+
+
+		vTaskDelay(1000);
+	}
+}
 

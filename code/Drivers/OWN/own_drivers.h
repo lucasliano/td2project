@@ -21,5 +21,6 @@
 #include "Inc/arrebote.h"
 #include "Inc/gpio.h"
 #include "Inc/lcd.h"
+#include "Inc/adc.h"
 
 #endif /* __OWN_DRIVERS_H */

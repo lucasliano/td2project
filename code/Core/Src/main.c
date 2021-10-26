@@ -119,6 +119,7 @@ int main(void)
   init_teclado();
   init_eeprom(&hi2c1);
   lcd_init (&hi2c1);
+  adc_init (&hadc1);
 
   /* USER CODE END 2 */
 
@@ -170,18 +171,24 @@ int main(void)
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(checkear_power_supply,
-//			  "checkear_power_supply",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(manejo_eeprom,
 //			  "manejo_eeprom",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(actualizar_nivel_bateria,
+			  "actualizar_nivel_bateria",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(checkear_power_supply,
+			  "checkear_power_supply",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
   if(xTaskCreate(lcd_update,
 			  "lcd_update",
 			  configMINIMAL_STACK_SIZE,

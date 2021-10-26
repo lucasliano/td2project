@@ -18,6 +18,6 @@ void conexion_bt(void *p);
 void checkear_power_supply(void *p);
 void manejo_eeprom(void *p);
 void lcd_update(void *p);
-//void actualizar_nivel_bateria(void *p);
+void actualizar_nivel_bateria(void *p);
 
 #endif /* __TAREAS_H */
