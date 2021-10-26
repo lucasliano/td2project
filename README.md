@@ -175,9 +175,9 @@ The main board does not present many difficulties. The biggest circuit used is a
 <!-- Authors -->
 ## Authors
 * Liaño, Lucas
+* Dieguez, Manuel
 * Golob, Lautaro Francisco
 * Crisafio, Gabriel
-* Dieguez, Manuel
 
 
 <!-- LICENSE -->
