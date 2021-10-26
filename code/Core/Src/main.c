@@ -118,6 +118,8 @@ int main(void)
   MFRC522_Init(&hspi2, SPI_NSS_GPIO_Port, SPI_NSS_Pin);
   init_teclado();
   init_eeprom(&hi2c1);
+  lcd_init (&hi2c1);
+
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -162,24 +164,24 @@ int main(void)
 			  NULL,
 			  1,
 			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(conexion_bt,
-			  "conexion_bt",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(checkear_power_supply,
-			  "checkear_power_supply",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(manejo_eeprom,
-			  "manejo_eeprom",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(conexion_bt,
+//			  "conexion_bt",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(checkear_power_supply,
+//			  "checkear_power_supply",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(manejo_eeprom,
+//			  "manejo_eeprom",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
   if(xTaskCreate(lcd_update,
 			  "lcd_update",
 			  configMINIMAL_STACK_SIZE,
@@ -319,7 +321,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 10000;
+  hi2c1.Init.ClockSpeed = 100000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
