@@ -20,5 +20,6 @@
 #include "Inc/rtc.h"
 #include "Inc/arrebote.h"
 #include "Inc/gpio.h"
+#include "Inc/lcd.h"
 
 #endif /* __OWN_DRIVERS_H */

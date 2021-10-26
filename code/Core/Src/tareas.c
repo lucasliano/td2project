@@ -355,7 +355,7 @@ void manejo_eeprom(void *p)
 					i2c_status = eeprom_write_page(recv_msg.page, wbuff, recv_msg.size);
 					if (i2c_status == EEPROM_ERROR) Error_Handler();
 
-					for(volatile int i=0;i<200000; i++);
+					HAL_Delay(100);
 					i2c_status = eeprom_read_page(recv_msg.page, rbuff, recv_msg.size);
 					if (i2c_status == EEPROM_ERROR) Error_Handler();
 
@@ -404,9 +404,17 @@ void manejo_eeprom(void *p)
 
 void lcd_update(void *p)
 {
+	char str[16];
 	while(1)
 	{
-		vTaskDelay(250);
+		lcd_clear();
+		lcd_cursor(0, 0);
+		lcd_send_string ("HORA:");
+//		lcd_cursor(1, 0);
+//		sprintf(str, "%d", (uint16_t) HAL_GetTick());
+		lcd_send_string(str);
+
+		vTaskDelay(1000);
 	}
 }
 
