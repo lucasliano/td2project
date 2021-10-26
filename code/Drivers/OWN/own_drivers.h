@@ -19,5 +19,6 @@
 #include "Inc/sensor.h"
 #include "Inc/rtc.h"
 #include "Inc/arrebote.h"
+#include "Inc/gpio.h"
 
 #endif /* __OWN_DRIVERS_H */

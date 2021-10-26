@@ -28,6 +28,15 @@ static I2C_HandleTypeDef* i2c;
 void init_eeprom(I2C_HandleTypeDef *s)
 {
 	i2c = s;
+	uint8_t wbuff[EEPROM_PAGE_SIZE];
+
+	// Escribimos toda la memoria con 0xF
+	for (int page = 0; page < EEPROM_TOTAL_PAGES; page++)
+	{
+		for (int i = 0; i < EEPROM_PAGE_SIZE; i++)
+			wbuff[i] = 255;
+		eeprom_write_page(page, wbuff, EEPROM_PAGE_SIZE);
+	}
 }
 
 /*
@@ -44,15 +53,10 @@ void init_eeprom(I2C_HandleTypeDef *s)
 uint8_t write_eeprom(uint8_t addr, uint8_t* data, uint8_t size)
 {
 	uint8_t ret = HAL_ERROR;
-	uint8_t wbuff[size+1];
 
-	if (size > EEPROM_PAGE_SIZE) return EEPROM_ERROR;
-
-	wbuff[0] = addr;			 // Cargo en wbuff[0] el addr que queremos escribir en la memoria
-	memcpy(wbuff+1, data, size); // Copio a partir de wbuff[1] los datos a enviar.
-
-	// Escribo por I2C
-	ret = HAL_I2C_Master_Transmit(i2c, EEPROM_ADDRESS_I2C, wbuff, size+1, HAL_MAX_DELAY);
+	ret =  HAL_I2C_Mem_Write(i2c, EEPROM_ADDRESS_I2C,
+							 addr, I2C_MEMADD_SIZE_8BIT,
+							 data, size, HAL_MAX_DELAY);
 	if (ret != HAL_OK) return EEPROM_ERROR;
 
 	return EEPROM_OK;
@@ -74,7 +78,7 @@ uint8_t read_eeprom(uint8_t addr, uint8_t* rbuff, uint8_t size)
 	uint8_t ret = HAL_ERROR;
 
 	ret =  HAL_I2C_Mem_Read(i2c, EEPROM_ADDRESS_I2C,
-							addr, I2C_MEMADD_SIZE_16BIT, rbuff,
+							addr, I2C_MEMADD_SIZE_8BIT, rbuff,
 							size,  HAL_MAX_DELAY);
 	if (ret != HAL_OK) return EEPROM_ERROR;
 

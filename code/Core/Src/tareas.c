@@ -12,6 +12,9 @@
 extern xSemaphoreHandle sem_clave;
 
 /* ---------  Colas de mensaje    ------------*/
+extern xQueueHandle queue_from_eeprom;
+extern xQueueHandle queue_to_eeprom;
+
 
 /* ---------  Variables de estado ------------*/
 extern arrebote boton[4][4];
@@ -223,6 +226,7 @@ void detectar_sensores(void *p)
 							if(clave_ok){
 								estado=1;
 								clave_ok = 0; //Bajo el flag
+								toggle_led(LED_1);
 							}
 			xSemaphoreGive(sem_clave);
 			break;
@@ -238,6 +242,8 @@ void detectar_sensores(void *p)
 							if(clave_ok){
 								estado=0;
 								clave_ok = 0; //Bajo el flag
+								toggle_led(LED_1);
+								start_buzzer(500, 500, 5);
 							}
 			xSemaphoreGive(sem_clave);
 			break;
@@ -250,8 +256,28 @@ void detectar_sensores(void *p)
 void conexion_bt(void *p)
 {
 	// Maquinas de estados con ESPERANDO_CONEXION - ESPERANDO_COMANDO - ACTUANDO
+	struct eeprom_message send_msg;
+	uint8_t status;
+	uint32_t current_value = 1;
+
 	while(1)
 	{
+		current_value ^= current_value << 13;
+		current_value ^= current_value >> 17;
+		current_value ^= current_value << 5;
+
+		send_msg.PID 	= PID_RFID;
+		send_msg.CMD_ID = EEPROM_CMD_WRITE;
+		send_msg.page 	= 3;
+		for (int j = 0; j < 3; j++)
+			send_msg.data[j]= (uint8_t) (current_value >> j*8) & 0xF;
+		for (int j = 3; j < EEPROM_PAGE_SIZE; j++)
+			send_msg.data[j] = 0;
+		send_msg.size 	= EEPROM_PAGE_SIZE;
+
+		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+		if (status == errQUEUE_FULL) Error_Handler();
+
 		vTaskDelay(1000);
 	}
 }
@@ -259,21 +285,120 @@ void conexion_bt(void *p)
 void checkear_power_supply(void *p)
 {
 	// Lectura ADC
+	struct eeprom_message send_msg;
+	struct eeprom_message recv_msg;
+	uint8_t status;
+
 	while(1)
 	{
+		send_msg.PID 	= PID_ADC;
+		send_msg.CMD_ID = EEPROM_CMD_READ;
+		send_msg.page 	= 3;
+		for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+			send_msg.data[j] = 0;
+		send_msg.size 	= EEPROM_PAGE_SIZE;
+		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+		if (status == errQUEUE_FULL) Error_Handler();
+
+		do{
+			status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+			vTaskDelay(10);
+		}while(status != pdTRUE);
+
+
 		vTaskDelay(1000);
 	}
 }
 
-void escritura_eeprom(void *p)
+void manejo_eeprom(void *p)
+/*
+ * ======== manejo_eeprom =============
+ * Tarea orientada a resolver el problema de escrituras y lecturas a la eeprom por varios
+ * consumidores. Se utilizan colas con dicho proposito.
+ *
+ *
+ */
 {
+
 	// Cola de mensajes
-//	xQueueReceive(cola_tiempo, &item, portMAX_DELAY);
-//	vTaskDelay(item);
-//	xQueueSend(cola_todo_piola,&ok,portMAX_DELAY);
+	uint8_t rbuff [EEPROM_PAGE_SIZE];
+	uint8_t wbuff [EEPROM_PAGE_SIZE];
+	uint8_t i2c_status;
+	uint8_t status;
+	struct eeprom_message recv_msg;
+	struct eeprom_message send_msg;
+
 	while(1)
 	{
-		vTaskDelay(1000);
+		i2c_status = EEPROM_ERROR;
+		status = xQueueReceive(queue_to_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+		if (status == pdTRUE)
+		{
+			switch(recv_msg.CMD_ID)
+			{
+				case EEPROM_CMD_READ:
+					i2c_status = eeprom_read_page(recv_msg.page, rbuff, recv_msg.size);
+					if (i2c_status == EEPROM_ERROR) Error_Handler();
+					send_msg.PID 	= recv_msg.PID;
+					send_msg.CMD_ID = EEPROM_CMD_ACK;	//ACK
+					send_msg.page 	= recv_msg.page;
+					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+						send_msg.data[j] = rbuff[j];
+					send_msg.size 	= recv_msg.size;
+					status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+					if (status == errQUEUE_FULL) Error_Handler();
+					break;
+
+				case EEPROM_CMD_WRITE:
+					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+						wbuff[j] = recv_msg.data[j];
+					i2c_status = eeprom_write_page(recv_msg.page, wbuff, recv_msg.size);
+					if (i2c_status == EEPROM_ERROR) Error_Handler();
+
+					for(volatile int i=0;i<200000; i++);
+					i2c_status = eeprom_read_page(recv_msg.page, rbuff, recv_msg.size);
+					if (i2c_status == EEPROM_ERROR) Error_Handler();
+
+					for (int i = 0; i < recv_msg.size; i++)
+					{
+						if(rbuff[i] != recv_msg.data[i]) // Si lo que escribiste es distinto a lo leido
+						{
+							send_msg.PID 	= recv_msg.PID;
+							send_msg.CMD_ID = EEPROM_CMD_NACK;	//ERROR
+							send_msg.page 	= 0;
+							for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+								send_msg.data[j] = 0;
+							send_msg.size 	= 0;
+							status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+							if (status == errQUEUE_FULL) Error_Handler();
+							break;
+						}
+					}
+
+					// Si llegamos acá es porque se escribió bien.
+					send_msg.PID 	= recv_msg.PID;
+					send_msg.CMD_ID = EEPROM_CMD_ACK;	//ACK
+					send_msg.page 	= 0;
+					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+						send_msg.data[j] = 0;
+					send_msg.size 	= 0;
+					status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+					if (status == errQUEUE_FULL) Error_Handler();
+					break;
+
+				default:
+					send_msg.PID 	= recv_msg.PID;
+					send_msg.CMD_ID = EEPROM_CMD_NACK;	//ERROR
+					send_msg.page 	= 0;
+					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+						send_msg.data[j] = 0;
+					send_msg.size 	= 0;
+					status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+					if (status == errQUEUE_FULL) Error_Handler();
+					break;
+			}
+		}
+		vTaskDelay(10);
 	}
 }
 
@@ -281,14 +406,10 @@ void lcd_update(void *p)
 {
 	while(1)
 	{
-		vTaskDelay(1000);
+		vTaskDelay(250);
 	}
 }
 
-//void lectura_eeprom(void *p)
-//{
-//
-//}
 
 //void actualizar_nivel_bateria(void *p)
 //{

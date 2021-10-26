@@ -18,8 +18,8 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include "cmsis_os.h"
 #include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -67,7 +67,8 @@ static void MX_USART1_UART_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
-xQueueHandle eeprom_queue;
+xQueueHandle queue_from_eeprom;
+xQueueHandle queue_to_eeprom;
 xSemaphoreHandle sem_clave;
 
 uint8_t clave_ok = 0;
@@ -133,10 +134,14 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  if(!(eeprom_queue = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
+  if(!(queue_from_eeprom = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
 	{
 	  	  Error_Handler();
 	}
+  if(!(queue_to_eeprom = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
+  	{
+  	  	  Error_Handler();
+  	}
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -169,8 +174,8 @@ int main(void)
 			  NULL,
 			  1,
 			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(escritura_eeprom,
-			  "escritura_eeprom",
+  if(xTaskCreate(manejo_eeprom,
+			  "manejo_eeprom",
 			  configMINIMAL_STACK_SIZE,
 			  NULL,
 			  1,
@@ -452,14 +457,16 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7|GPIO_PIN_10, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_3|GPIO_PIN_4
-                          |GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_12, GPIO_PIN_SET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
@@ -549,7 +556,7 @@ void Error_Handler(void)
 	__disable_irq();
 	while(1)
 	{
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_13);	//LED Bluepill
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);	//LED Bluepill
 		for(i=0;i<200000; i++);
 	}
   /* USER CODE END Error_Handler_Debug */
