@@ -7,6 +7,9 @@
 #include "own_drivers.h"
 
 /* ========= Variables Globales ==============*/
+extern uint32_t flag_hay_datos_adc;
+uint32_t ticks_adc;
+extern uint16_t raw_data[LEN_MUESTRAS*N_CANALES];
 /* ---------     Semaforos        ------------*/
 
 /* ---------  Colas de mensaje    ------------*/
@@ -20,25 +23,35 @@ void adc_init(ADC_HandleTypeDef* handler)
 {
 	adc = handler;
 	HAL_ADCEx_Calibration_Start(adc);
+	ticks_adc = HAL_GetTick();
 }
 
-uint32_t get_adc_raw(uint8_t channel)
+void update_adc()
 {
-	uint32_t raw;
-	uint16_t jj;
+	uint32_t i, promedio_ch0, promedio_ch1;
+	HAL_StatusTypeDef a;
 
-	HAL_ADC_Start(adc);
 
-	for(jj = 0; jj < channel+1; jj++)
+	if((HAL_GetTick()-ticks_adc)>=TIC_MUESTRAS_MS)
 	{
-		HAL_ADC_PollForConversion(adc, ADC_TIMEOUT);
-		HAL_Delay(DELAY_ADC);
-		raw = HAL_ADC_GetValue(adc);
+		ticks_adc = HAL_GetTick();
+		a = HAL_ADC_Start_DMA(adc, (uint32_t*)raw_data, LEN_MUESTRAS*N_CANALES);
 	}
 
-	HAL_ADC_Stop(adc);
+	if(flag_hay_datos_adc)
+	{
+		flag_hay_datos_adc--;
+		promedio_ch0=0;
+		promedio_ch1=0;
+		for(i=0;i<LEN_MUESTRAS;i++)
+		{
+			promedio_ch0+=raw_data[(i<<1)|0];
+			promedio_ch1+=raw_data[(i<<1)|1];
+		}
+		promedio_ch0/=LEN_MUESTRAS;
+		promedio_ch1/=LEN_MUESTRAS;
+	}
 
-	return raw;
 }
 
 

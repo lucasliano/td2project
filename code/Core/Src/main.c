@@ -42,6 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 
@@ -63,6 +64,7 @@ static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_RTC_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_DMA_Init(void);
 static void MX_USART1_UART_Init(void);
 void StartDefaultTask(void const * argument);
 
@@ -72,10 +74,16 @@ xQueueHandle queue_to_eeprom;
 xSemaphoreHandle sem_clave;
 
 uint8_t clave_ok = 0;
+uint16_t raw_data[LEN_MUESTRAS*N_CANALES];
+uint32_t flag_hay_datos_adc = 0;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+	flag_hay_datos_adc++;
+}
 
 /* USER CODE END 0 */
 
@@ -112,6 +120,7 @@ int main(void)
   MX_I2C1_Init();
   MX_RTC_Init();
   MX_SPI2_Init();
+  MX_DMA_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_Delay(100);
@@ -165,30 +174,30 @@ int main(void)
 			  NULL,
 			  1,
 			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(conexion_bt,
-//			  "conexion_bt",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(manejo_eeprom,
-//			  "manejo_eeprom",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(conexion_bt,
+			  "conexion_bt",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(manejo_eeprom,
+			  "manejo_eeprom",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
   if(xTaskCreate(actualizar_nivel_bateria,
 			  "actualizar_nivel_bateria",
 			  configMINIMAL_STACK_SIZE,
 			  NULL,
 			  1,
 			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(checkear_power_supply,
-			  "checkear_power_supply",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(checkear_power_supply,
+//			  "checkear_power_supply",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
   if(xTaskCreate(lcd_update,
 			  "lcd_update",
 			  configMINIMAL_STACK_SIZE,
@@ -287,21 +296,29 @@ static void MX_ADC1_Init(void)
   /** Common config
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 2;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
     Error_Handler();
   }
   /** Configure Regular Channel
   */
-  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Regular Channel
+  */
+  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Rank = ADC_REGULAR_RANK_2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -444,6 +461,22 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Channel1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
 
 }
 

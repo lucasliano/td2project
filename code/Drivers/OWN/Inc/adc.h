@@ -9,13 +9,13 @@
 #define OWN_INC_ADC_H_
 
 #define CHANNEL_POWER_SUPPLY 1
-#define CHANNEL_POWER_BATT 1
+#define CHANNEL_POWER_BATT 2
 
-#define ADC_TIMEOUT 10
-#define TICKS_ADC_MS		(50)
-#define DELAY_ADC			(64)
+#define LEN_MUESTRAS	(8)
+#define N_CANALES		(2)
+#define TIC_MUESTRAS_MS	(10)
 
 void adc_init(ADC_HandleTypeDef*);
-uint32_t get_adc_raw(uint8_t channel);
+void update_adc(void);
 
 #endif /* OWN_INC_ADC_H_ */
