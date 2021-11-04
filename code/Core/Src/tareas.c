@@ -255,45 +255,60 @@ void detectar_sensores(void *p)
 
 void conexion_bt(void *p)
 {
-	// Maquinas de estados con ESPERANDO_CONEXION - ESPERANDO_COMANDO - ACTUANDO
-	struct eeprom_message send_msg;
-	uint8_t status;
-	uint32_t current_value = 1;
+//	// Maquinas de estados con ESPERANDO_CONEXION - ESPERANDO_COMANDO - ACTUANDO
+//	struct eeprom_message send_msg;
+//	struct eeprom_message recv_msg;
+//	uint8_t status;
+//	uint32_t current_value = 1;
+//	uint8_t space_available = 0;
 
 	while(1)
 	{
-		current_value ^= current_value << 13;
-		current_value ^= current_value >> 17;
-		current_value ^= current_value << 5;
+//		space_available = uxQueueSpacesAvailable(queue_to_eeprom);
+//
+//		if (space_available > 0)
+//		{
+//			current_value ^= current_value << 13;
+//			current_value ^= current_value >> 17;
+//			current_value ^= current_value << 5;
+//
+//			send_msg.PID 	= PID_RFID;
+//			send_msg.CMD_ID = EEPROM_CMD_WRITE;
+//			send_msg.page 	= 3;
+//			for (int j = 0; j < 3; j++)
+//				send_msg.data[j]= (uint8_t) (current_value >> j*8) & 0xF;
+//			for (int j = 3; j < EEPROM_PAGE_SIZE; j++)
+//				send_msg.data[j] = 0;
+//			send_msg.size 	= EEPROM_PAGE_SIZE;
+//
+//			status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+//			if (status == errQUEUE_FULL){
+//				Error_Handler();
+//			}
+//
+//			do{
+//				status = xQueuePeek(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+//				if (status == pdTRUE){
+//					if(recv_msg.PID == PID_RFID)
+//					{
+//						status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+//					}else{
+//						status = pdFALSE;
+//					}
+//				}
+//				vTaskDelay(10);
+//			}while(status != pdTRUE);
+//		}
 
-		send_msg.PID 	= PID_RFID;
-		send_msg.CMD_ID = EEPROM_CMD_WRITE;
-		send_msg.page 	= 3;
-		for (int j = 0; j < 3; j++)
-			send_msg.data[j]= (uint8_t) (current_value >> j*8) & 0xF;
-		for (int j = 3; j < EEPROM_PAGE_SIZE; j++)
-			send_msg.data[j] = 0;
-		send_msg.size 	= EEPROM_PAGE_SIZE;
-
-		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-		if (status == errQUEUE_FULL) Error_Handler();
-
-		vTaskDelay(1000);
+		vTaskDelay(100);
 	}
 }
 
 void checkear_power_supply(void *p)
 {
-	uint32_t raw;
-	uint32_t ticks_adc = HAL_GetTick();
-
 	while(1)
 	{
-		if((HAL_GetTick()-ticks_adc)>= TICKS_ADC_MS)
-		{
-			ticks_adc = HAL_GetTick();
-			raw = get_adc_raw(CHANNEL_POWER_SUPPLY);
-		}
+		update_adc();
 		vTaskDelay(100);
 
 	}
@@ -318,6 +333,7 @@ void manejo_eeprom(void *p)
 	struct eeprom_message recv_msg;
 	struct eeprom_message send_msg;
 
+
 	while(1)
 	{
 		i2c_status = EEPROM_ERROR;
@@ -327,7 +343,7 @@ void manejo_eeprom(void *p)
 			switch(recv_msg.CMD_ID)
 			{
 				case EEPROM_CMD_READ:
-					i2c_status = eeprom_read_page(recv_msg.page, rbuff, recv_msg.size);
+					i2c_status = eeprom_read_page(recv_msg.page, 0, rbuff, recv_msg.size);
 					if (i2c_status == EEPROM_ERROR) Error_Handler();
 					send_msg.PID 	= recv_msg.PID;
 					send_msg.CMD_ID = EEPROM_CMD_ACK;	//ACK
@@ -335,18 +351,19 @@ void manejo_eeprom(void *p)
 					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
 						send_msg.data[j] = rbuff[j];
 					send_msg.size 	= recv_msg.size;
-					status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-					if (status == errQUEUE_FULL) Error_Handler();
+
+					send_msg_from_eeprom(&send_msg);
+
 					break;
 
 				case EEPROM_CMD_WRITE:
 					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
 						wbuff[j] = recv_msg.data[j];
-					i2c_status = eeprom_write_page(recv_msg.page, wbuff, recv_msg.size);
+					i2c_status = eeprom_write_page(recv_msg.page, 0, wbuff, recv_msg.size);
 					if (i2c_status == EEPROM_ERROR) Error_Handler();
 
-					HAL_Delay(100);
-					i2c_status = eeprom_read_page(recv_msg.page, rbuff, recv_msg.size);
+					vTaskDelay(100);
+					i2c_status = eeprom_read_page(recv_msg.page, 0, rbuff, recv_msg.size);
 					if (i2c_status == EEPROM_ERROR) Error_Handler();
 
 					for (int i = 0; i < recv_msg.size; i++)
@@ -359,8 +376,8 @@ void manejo_eeprom(void *p)
 							for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
 								send_msg.data[j] = 0;
 							send_msg.size 	= 0;
-							status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-							if (status == errQUEUE_FULL) Error_Handler();
+
+							send_msg_from_eeprom(&send_msg);
 							break;
 						}
 					}
@@ -372,8 +389,8 @@ void manejo_eeprom(void *p)
 					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
 						send_msg.data[j] = 0;
 					send_msg.size 	= 0;
-					status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-					if (status == errQUEUE_FULL) Error_Handler();
+
+					send_msg_from_eeprom(&send_msg);
 					break;
 
 				default:
@@ -383,8 +400,8 @@ void manejo_eeprom(void *p)
 					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
 						send_msg.data[j] = 0;
 					send_msg.size 	= 0;
-					status = xQueueSend(queue_from_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-					if (status == errQUEUE_FULL) Error_Handler();
+
+					send_msg_from_eeprom(&send_msg);
 					break;
 			}
 		}
@@ -411,28 +428,43 @@ void lcd_update(void *p)
 
 void actualizar_nivel_bateria(void *p)
 {
-	struct eeprom_message send_msg;
-	struct eeprom_message recv_msg;
-	uint8_t status;
+//	struct eeprom_message send_msg;
+//	struct eeprom_message recv_msg;
+//	uint8_t status;
+//	uint8_t space_available = 0;
 
 	while(1)
 	{
-		send_msg.PID 	= PID_ADC;
-		send_msg.CMD_ID = EEPROM_CMD_READ;
-		send_msg.page 	= 3;
-		for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-			send_msg.data[j] = 0;
-		send_msg.size 	= EEPROM_PAGE_SIZE;
-		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-		if (status == errQUEUE_FULL) Error_Handler();
+//		space_available = uxQueueSpacesAvailable(queue_to_eeprom);
+//
+//		if (space_available > 0)
+//		{
+//			send_msg.PID 	= PID_ADC;
+//			send_msg.CMD_ID = EEPROM_CMD_READ;
+//			send_msg.page 	= 3;
+//			for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
+//				send_msg.data[j] = 0;
+//			send_msg.size 	= EEPROM_PAGE_SIZE;
+//			status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+//			if (status == errQUEUE_FULL){
+//				Error_Handler();
+//			}
+//
+//			do{
+//				status = xQueuePeek(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+//				if (status == pdTRUE){
+//					if(recv_msg.PID == PID_ADC)
+//					{
+//						status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+//					}else{
+//						status = pdFALSE;
+//					}
+//				}
+//				vTaskDelay(10);
+//			}while(status != pdTRUE);
+//		}
 
-		do{
-			status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-			vTaskDelay(10);
-		}while(status != pdTRUE);
-
-
-		vTaskDelay(1000);
+		vTaskDelay(100);
 	}
 }
 
