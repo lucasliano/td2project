@@ -6,7 +6,7 @@
 
 /* ========= Variables Globales ==============*/
 /* ---------     Semaforos        ------------*/
-extern xSemaphoreHandle sem_clave;
+extern xSemaphoreHandle sem_state;
 
 /* ---------  Colas de mensaje    ------------*/
 
@@ -24,13 +24,14 @@ static SPI_HandleTypeDef *spi;
  * 					None.
  * Return value: None
  */
-void rfid_toggle_state(void){
+void rfid_toggle_state(void)
+{
 	if (rfid_debounce() == CARD_DETECTED)
 	{
 		// Toggle clave state
-		xSemaphoreTake(sem_clave,portMAX_DELAY);
+		xSemaphoreTake(sem_state,portMAX_DELAY);
 		clave_ok = 1;
-		xSemaphoreGive(sem_clave);
+		xSemaphoreGive(sem_state);
 	}
 }
 

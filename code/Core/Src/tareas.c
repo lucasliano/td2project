@@ -9,7 +9,7 @@
 
 /* ========= Variables Globales ==============*/
 /* ---------     Semaforos        ------------*/
-extern xSemaphoreHandle sem_clave;
+extern xSemaphoreHandle sem_state;
 
 /* ---------  Colas de mensaje    ------------*/
 extern xQueueHandle queue_from_eeprom;
@@ -40,14 +40,14 @@ void checkear_teclado(void *p)
 		if (i == (LARGO_CLAVE+1)){
 			i=0;
 			if(chequear_clave(tecla) ){
-				xSemaphoreTake(sem_clave,portMAX_DELAY);
+				xSemaphoreTake(sem_state,portMAX_DELAY);
 				clave_ok = 1;
-				xSemaphoreGive(sem_clave);
+				xSemaphoreGive(sem_state);
 			}
 			else{
-				xSemaphoreTake(sem_clave,portMAX_DELAY);
+				xSemaphoreTake(sem_state,portMAX_DELAY);
 				clave_ok = 0;
-				xSemaphoreGive(sem_clave);
+				xSemaphoreGive(sem_state);
 			}
 		}
 
@@ -222,13 +222,13 @@ void detectar_sensores(void *p)
 	for(;;){
 		switch(estado){
 		case 0:				//APAGADO
-			xSemaphoreTake(sem_clave,portMAX_DELAY);
+			xSemaphoreTake(sem_state,portMAX_DELAY);
 							if(clave_ok){
 								estado=1;
 								clave_ok = 0; //Bajo el flag
 								toggle_led(LED_1);
 							}
-			xSemaphoreGive(sem_clave);
+			xSemaphoreGive(sem_state);
 			break;
 
 		case 1:				//ENCENDIDO
@@ -238,14 +238,14 @@ void detectar_sensores(void *p)
 			if(leer_sensor(2)){
 
 			}*/
-			xSemaphoreTake(sem_clave,portMAX_DELAY);
+			xSemaphoreTake(sem_state,portMAX_DELAY);
 							if(clave_ok){
 								estado=0;
 								clave_ok = 0; //Bajo el flag
 								toggle_led(LED_1);
 								start_buzzer(500, 500, 5);
 							}
-			xSemaphoreGive(sem_clave);
+			xSemaphoreGive(sem_state);
 			break;
 
 		}

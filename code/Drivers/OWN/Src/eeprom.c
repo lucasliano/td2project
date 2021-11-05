@@ -9,7 +9,10 @@
 #include "own_drivers.h"
 
 /* ========= Variables Globales ==============*/
+extern uint8_t clave[4];
+
 /* ---------     Semaforos        ------------*/
+extern xSemaphoreHandle sem_clave;
 
 /* ---------  Colas de mensaje    ------------*/
 extern xQueueHandle queue_from_eeprom;
@@ -44,14 +47,14 @@ void init_eeprom(I2C_HandleTypeDef *s)
 	}
 
 	// Cargo valores por default de Signature
-	sprintf(wbuff, "tecnicas");
+	memcpy(wbuff, "tecnicas",8);
 	eeprom_write_page(ID_INIT_PAGE, 0, wbuff, EEPROM_PAGE_SIZE);
 	HAL_Delay(10);
 
 	for (uint8_t i = 0; i < EEPROM_PAGE_SIZE; i++)
 		wbuff[i] = 0;
 
-	sprintf(wbuff, "digitale");
+	memcpy(wbuff, "digitale",8);
 	eeprom_write_page(ID_INIT_PAGE+1, 0, wbuff, EEPROM_PAGE_SIZE);
 	HAL_Delay(10);
 
@@ -59,7 +62,8 @@ void init_eeprom(I2C_HandleTypeDef *s)
 		wbuff[i] = 0;
 
 	// Cargo valor por default de password
-	sprintf(wbuff, "1234XXXX");
+	memcpy(clave, "1234",8);
+	memcpy(wbuff, "1234XXXX",8);
 	eeprom_write_page(PASS_INIT_PAGE, 0, wbuff, EEPROM_PAGE_SIZE);
 	HAL_Delay(10);
 
@@ -71,7 +75,7 @@ void init_eeprom(I2C_HandleTypeDef *s)
 	eeprom_write_page(RFID_INIT_PAGE, 0, wbuff, EEPROM_PAGE_SIZE);
 	HAL_Delay(10);
 
-//
+
 //	uint8_t rbuff[EEPROM_PAGE_SIZE];
 //	for (uint8_t page = 0; page < EEPROM_TOTAL_PAGES; page++)
 //	{

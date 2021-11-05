@@ -71,6 +71,7 @@ void StartDefaultTask(void const * argument);
 /* USER CODE BEGIN PFP */
 xQueueHandle queue_from_eeprom;
 xQueueHandle queue_to_eeprom;
+xSemaphoreHandle sem_state;
 xSemaphoreHandle sem_clave;
 
 uint8_t clave_ok = 0;
@@ -134,6 +135,7 @@ int main(void)
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
+  sem_state = xSemaphoreCreateMutex();
   sem_clave = xSemaphoreCreateMutex();
   /* USER CODE END RTOS_MUTEX */
 
@@ -168,48 +170,48 @@ int main(void)
   			  NULL,
   			  1,
   			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(detectar_sensores,
-			  "detectar_sensores",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(conexion_bt,
-			  "conexion_bt",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(manejo_eeprom,
-			  "manejo_eeprom",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(actualizar_nivel_bateria,
-			  "actualizar_nivel_bateria",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(detectar_sensores,
+//			  "detectar_sensores",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(conexion_bt,
+//			  "conexion_bt",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(manejo_eeprom,
+//			  "manejo_eeprom",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(actualizar_nivel_bateria,
+//			  "actualizar_nivel_bateria",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(checkear_power_supply,
 //			  "checkear_power_supply",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(lcd_update,
-			  "lcd_update",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(detectar_rfid,
-  			  "detectar_rfid",
-			  configMINIMAL_STACK_SIZE*4,
-  			  NULL,
-  			  1,
-  			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(lcd_update,
+//			  "lcd_update",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(detectar_rfid,
+//  			  "detectar_rfid",
+//			  configMINIMAL_STACK_SIZE*4,
+//  			  NULL,
+//  			  1,
+//  			  NULL)!= pdPASS) Error_Handler();
 
 
   /* USER CODE END RTOS_THREADS */

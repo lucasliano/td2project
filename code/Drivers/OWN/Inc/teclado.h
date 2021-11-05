@@ -30,10 +30,10 @@
 #define DEMORA_LECTURA	20 //ms
 
 #define LARGO_CLAVE 4
-#define CLAVE1 '8'
-#define CLAVE2 '4'
-#define CLAVE3 '3'
-#define CLAVE4 '7'
+//#define CLAVE1 '8'
+//#define CLAVE2 '4'
+//#define CLAVE3 '3'
+//#define CLAVE4 '7'
 
 void tarea_teclado(void *p);
 uint8_t chequear_clave(uint8_t *t);

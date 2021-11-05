@@ -6,19 +6,35 @@
  */
 #include "main.h"
 
-arrebote boton[4][4];
 
+/* ========= Variables Globales ==============*/
+arrebote boton[4][4];
+uint8_t clave[4];
+
+/* ---------     Semaforos        ------------*/
+extern xSemaphoreHandle sem_clave;
+
+/* ---------  Colas de mensaje    ------------*/
+
+/* ---------  Variables de estado ------------*/
+
+/* ===========================================*/
 
 uint8_t chequear_clave(uint8_t *t){
+	uint8_t out = 0;
+
+	xSemaphoreTake(sem_clave,portMAX_DELAY);
 	if (t[LARGO_CLAVE] == '#'){
-		if (t[0]==CLAVE1 && t[1]==CLAVE2 && t[2]==CLAVE3 && t[3]==CLAVE4){
-			return 1;
+		if (t[0]==clave[0] && t[1]==clave[1] && t[2]==clave[2] && t[3]==clave[3]){
+			out = 1;
 		}
 		else
-			return 0;
+			out = 0;
 	}
 	else
-	return 0;
+		out = 0;
+	xSemaphoreGive(sem_clave);
+	return out;
 }
 
 
