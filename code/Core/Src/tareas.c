@@ -200,7 +200,6 @@ void detectar_rfid(void *p)
  * 		3.3V -> 	3.3
  */
 {
-
 	while(1)
 	{
 		rfid_toggle_state();
@@ -223,11 +222,11 @@ void detectar_sensores(void *p)
 		switch(estado){
 		case 0:				//APAGADO
 			xSemaphoreTake(sem_state,portMAX_DELAY);
-							if(clave_ok){
-								estado=1;
-								clave_ok = 0; //Bajo el flag
-								toggle_led(LED_1);
-							}
+			if(clave_ok){
+				estado=1;
+				clave_ok = 0; //Bajo el flag
+				toggle_led(LED_1);
+			}
 			xSemaphoreGive(sem_state);
 			break;
 
@@ -239,12 +238,12 @@ void detectar_sensores(void *p)
 
 			}*/
 			xSemaphoreTake(sem_state,portMAX_DELAY);
-							if(clave_ok){
-								estado=0;
-								clave_ok = 0; //Bajo el flag
-								toggle_led(LED_1);
-								start_buzzer(500, 500, 5);
-							}
+			if(clave_ok){
+				estado=0;
+				clave_ok = 0; //Bajo el flag
+				toggle_led(LED_1);
+				start_buzzer(500, 500, 5);
+			}
 			xSemaphoreGive(sem_state);
 			break;
 
@@ -298,6 +297,7 @@ void conexion_bt(void *p)
 //				}
 //				vTaskDelay(10);
 //			}while(status != pdTRUE);
+//			vTaskDelay(10);
 //		}
 
 		vTaskDelay(100);
@@ -462,6 +462,7 @@ void actualizar_nivel_bateria(void *p)
 //				}
 //				vTaskDelay(10);
 //			}while(status != pdTRUE);
+//			vTaskDelay(10);
 //		}
 
 		vTaskDelay(100);

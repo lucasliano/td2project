@@ -83,7 +83,9 @@ uint32_t flag_hay_datos_adc = 0;
 /* USER CODE BEGIN 0 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
+	portBASE_TYPE pxHigherPriorityTaskWoken;
 	flag_hay_datos_adc++;
+	portEND_SWITCHING_ISR(pxHigherPriorityTaskWoken);
 }
 
 /* USER CODE END 0 */
@@ -170,48 +172,48 @@ int main(void)
   			  NULL,
   			  1,
   			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(detectar_sensores,
-//			  "detectar_sensores",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_sensores,
+			  "detectar_sensores",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(conexion_bt,
 //			  "conexion_bt",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(manejo_eeprom,
-//			  "manejo_eeprom",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(manejo_eeprom,
+			  "manejo_eeprom",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(actualizar_nivel_bateria,
 //			  "actualizar_nivel_bateria",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(checkear_power_supply,
-//			  "checkear_power_supply",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(lcd_update,
-//			  "lcd_update",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(detectar_rfid,
-//  			  "detectar_rfid",
-//			  configMINIMAL_STACK_SIZE*4,
-//  			  NULL,
-//  			  1,
-//  			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(checkear_power_supply,
+			  "checkear_power_supply",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(lcd_update,
+			  "lcd_update",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_rfid,
+  			  "detectar_rfid",
+			  configMINIMAL_STACK_SIZE*4,
+  			  NULL,
+  			  1,
+  			  NULL)!= pdPASS) Error_Handler();
 
 
   /* USER CODE END RTOS_THREADS */
@@ -501,16 +503,14 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_13, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_5|GPIO_PIN_6
+                          |GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1|GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_1, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|GPIO_PIN_12, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
@@ -520,27 +520,37 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA2 PA3 PA5 PA6
-                           PA8 PA9 */
+                           PA7 */
   GPIO_InitStruct.Pin = GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_5|GPIO_PIN_6
-                          |GPIO_PIN_8|GPIO_PIN_9;
+                          |GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB1 PB10 PB12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA8 PA9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA7 PA10 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_10;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  /*Configure GPIO pin : PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB1 PB10 PB12 PB3
-                           PB4 PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_10|GPIO_PIN_12|GPIO_PIN_3
-                          |GPIO_PIN_4|GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  /*Configure GPIO pins : PB3 PB4 PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4|GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }

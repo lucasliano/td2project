@@ -62,8 +62,8 @@ void init_eeprom(I2C_HandleTypeDef *s)
 		wbuff[i] = 0;
 
 	// Cargo valor por default de password
-	memcpy(clave, "1234",8);
-	memcpy(wbuff, "1234XXXX",8);
+	memcpy(clave, "1234", 4);
+	memcpy(wbuff, "1234XXXX", 8);
 	eeprom_write_page(PASS_INIT_PAGE, 0, wbuff, EEPROM_PAGE_SIZE);
 	HAL_Delay(10);
 
@@ -76,14 +76,14 @@ void init_eeprom(I2C_HandleTypeDef *s)
 	HAL_Delay(10);
 
 
-//	uint8_t rbuff[EEPROM_PAGE_SIZE];
-//	for (uint8_t page = 0; page < EEPROM_TOTAL_PAGES; page++)
-//	{
-//		for (uint8_t i = 0; i < EEPROM_PAGE_SIZE; i++)
-//			rbuff[i] = 0;
-//		eeprom_read_page(page, 0, rbuff, EEPROM_PAGE_SIZE);
-//		HAL_Delay(10);
-//	}
+	uint8_t rbuff[EEPROM_PAGE_SIZE];
+	for (uint8_t page = 0; page < EEPROM_TOTAL_PAGES; page++)
+	{
+		for (uint8_t i = 0; i < EEPROM_PAGE_SIZE; i++)
+			rbuff[i] = 0;
+		eeprom_read_page(page, 0, rbuff, EEPROM_PAGE_SIZE);
+		HAL_Delay(10);
+	}
 }
 
 /*

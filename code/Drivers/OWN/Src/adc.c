@@ -31,7 +31,6 @@ void update_adc()
 	uint32_t i, promedio_ch0, promedio_ch1;
 	HAL_StatusTypeDef a;
 
-
 	if((HAL_GetTick()-ticks_adc)>=TIC_MUESTRAS_MS)
 	{
 		ticks_adc = HAL_GetTick();
