@@ -6,18 +6,25 @@
  */
 #include "own_drivers.h"
 
+
+void led_init(void)
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 	LED_OFF);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10,	LED_OFF);
+}
+
 void toggle_led(uint8_t led)
 {
 	switch(led)
 	{
-	case LED_1:
-		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
-		break;
-	case LED_2:
-		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
-		break;
-	default:
-		Error_Handler();
+		case LED_1:
+			HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+			break;
+		case LED_2:
+			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_10);
+			break;
+		default:
+			Error_Handler();
 	}
 }
 

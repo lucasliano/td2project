@@ -226,6 +226,7 @@ void detectar_sensores(void *p)
 				estado=1;
 				clave_ok = 0; //Bajo el flag
 				toggle_led(LED_1);
+				start_buzzer(500, 500, 5);
 			}
 			xSemaphoreGive(sem_state);
 			break;
@@ -242,7 +243,6 @@ void detectar_sensores(void *p)
 				estado=0;
 				clave_ok = 0; //Bajo el flag
 				toggle_led(LED_1);
-				start_buzzer(500, 500, 5);
 			}
 			xSemaphoreGive(sem_state);
 			break;
