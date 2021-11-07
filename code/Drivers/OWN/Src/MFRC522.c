@@ -108,10 +108,7 @@ uint8_t rfid_find_card(void)
 	{
 		HAL_Delay(2);
 		MFRC522_Anticoll(cardstr);
-		id[0] = cardstr[0];
-		id[1] = cardstr[1];
-		id[2] = cardstr[2];
-		id[3] = cardstr[3];
+		memcpy(id, &cardstr , 4);
 		MFRC522_Halt();
 		HAL_Delay(2);
 		return CARD_DETECTED;

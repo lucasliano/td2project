@@ -39,14 +39,10 @@
 #define PASS_BLOCK_DEPTH	1
 
 #define RFID_INIT_PAGE 		PASS_INIT_PAGE+PASS_BLOCK_DEPTH
-#define RFID_BLOCK_DEPTH 	1	// Cada ID son 2Byte, por ende nos entran 4 en 8Byte
+#define RFID_BLOCK_DEPTH 	1	// Cada ID son 4Byte, por ende nos entran 2 en 8Byte
 
 #define LOGS_INIT_PAGE 		RFID_INIT_PAGE+RFID_BLOCK_DEPTH
 #define LOGS_BLOCK_DEPTH	28
-
-
-
-
 
 
 //--------------------- Estructuras -----------------------
