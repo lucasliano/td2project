@@ -66,6 +66,14 @@ Should an error occurred, a notification will be sent to the mobile device and i
   </a>
 </p>
 
+#### Memory Map
+<p align="center">
+  <a href="https://github.com/lucasliano/td2project">
+    <img src="diagrama/memory_map.png" alt="Mapa de memoria">
+  </a>
+</p>
+
+
 ### Main Board PCB and Schematics
 
 #### Schematics
