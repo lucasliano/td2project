@@ -51,6 +51,7 @@
 	uint8_t PID;
 	uint8_t CMD_ID;
 	uint8_t page;
+	uint8_t offset;
 	uint8_t data[EEPROM_PAGE_SIZE];
 	uint8_t size;
  };
@@ -74,6 +75,7 @@ uint8_t read_eeprom(uint8_t addr, uint8_t* rbuff, uint8_t size);
 uint8_t eeprom_write_page(uint8_t page, uint8_t offset, uint8_t* data, uint8_t size);
 uint8_t eeprom_read_page(uint8_t page, uint8_t offset, uint8_t* rbuff, uint8_t size);
 void send_msg_from_eeprom(struct eeprom_message* send_msg);
-
+uint8_t consumer_write(uint8_t PID, uint8_t page, uint8_t offset, uint8_t* data, uint8_t size);
+uint8_t consumer_read(uint8_t PID, uint8_t page, uint8_t offset, uint8_t* data, uint8_t size);
 
 #endif /* OWN_INC_EEPROM_H_ */

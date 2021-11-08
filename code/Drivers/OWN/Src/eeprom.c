@@ -70,11 +70,11 @@ void init_eeprom(I2C_HandleTypeDef *s)
 		wbuff[i] = 0;
 
 	// Cargo valor por default de Tarjeta ID
-	id = 2 << 24 | 50 << 16 | 121 << 8 | 195;	// ID tarjeta blanca
+	id = (uint16_t)( 2 << 24 | 50 << 16 | 121 << 8 | 195 );	// ID tarjeta blanca
 	memcpy(wbuff, &id , 4);	// Nota: Debido al endianess, se guarda LSB primero
 	eeprom_write_page(RFID_INIT_PAGE, 0, wbuff, 4);
 	HAL_Delay(10);
-	id = 176 << 24 | 166 << 16 | 1 << 8 | 105;	// ID llavero
+	id = (uint16_t)( 176 << 24 | 166 << 16 | 1 << 8 | 105 );	// ID llavero
 	memcpy(wbuff, &id , 4);	// Nota: Debido al endianess, se guarda LSB primero
 	eeprom_write_page(RFID_INIT_PAGE, 4, wbuff, 4);
 	HAL_Delay(10);
@@ -203,4 +203,126 @@ void send_msg_from_eeprom(struct eeprom_message* send_msg)
 	}
 }
 
+/*
+ * Function Name: consumer_read
+ * Function Description: Función llamada a nivel de tarea para realizar lecturas.
+ * Input Parameters:
+ * 					uint8_t PID - Identificador del task que llama a la función.
+ * 					uint8_t page - Página que se desea leer.
+ * 					uint8_t offset - Byte a partir del cual se quiere realizar la lectura.
+ * 					uint8_t* data - Puntero al array donde se van a guardar los datos.
+ * 					uint8_t size - Cantidad de bytes a leer.
+ * Return value:
+ * 					EEPROM_OK si funciono la lectura.
+ * 					EEPROM_ERROR si no funciono.
+ */
+uint8_t consumer_read(uint8_t PID, uint8_t page, uint8_t offset, uint8_t* data, uint8_t size)
+{
+	struct eeprom_message send_msg;
+	struct eeprom_message recv_msg;
+	uint8_t status;
+	uint8_t space_available = 0;
+	uint8_t output_return = EEPROM_ERROR;
+
+	space_available = uxQueueSpacesAvailable(queue_to_eeprom);
+
+	if (space_available > 0)
+	{
+		send_msg.PID 	= PID;
+		send_msg.CMD_ID = EEPROM_CMD_READ;
+		send_msg.page 	= page;
+		send_msg.offset = offset;
+		send_msg.size 	= size;
+		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+		if (status == errQUEUE_FULL){
+			return EEPROM_ERROR;
+			Error_Handler();
+		}
+
+		do{
+			status = xQueuePeek(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+			if (status == pdTRUE){
+				if(recv_msg.PID == PID)
+				{
+					status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+				}else{
+					status = pdFALSE;
+				}
+			}
+			vTaskDelay(10);
+		}while(status != pdTRUE);
+		vTaskDelay(10);
+
+		if (recv_msg.CMD_ID == EEPROM_CMD_ACK)
+		{
+			memcpy(data, recv_msg.data, size);
+			output_return = EEPROM_OK;
+		}else{
+			output_return = EEPROM_ERROR;
+		}
+	}
+	return output_return;
+}
+
+
+/*
+ * Function Name: consumer_read
+ * Function Description: Función llamada a nivel de tarea para realizar escrituras.
+ * Input Parameters:
+ * 					uint8_t PID - Identificador del task que llama a la función.
+ * 					uint8_t page - Página que se desea escribir.
+ * 					uint8_t offset - Byte a partir del cual se quiere realizar la escritura.
+ * 					uint8_t* data - Puntero al array donde encuentran los datos.
+ * 					uint8_t size - Cantidad de bytes a escribir.
+ * Return value:
+ * 					EEPROM_OK si funciono la escritura.
+ * 					EEPROM_ERROR si no funciono.
+ */
+uint8_t consumer_write(uint8_t PID, uint8_t page, uint8_t offset, uint8_t* data, uint8_t size)
+{
+	struct eeprom_message send_msg;
+	struct eeprom_message recv_msg;
+	uint8_t status;
+	uint8_t space_available = 0;
+	uint8_t output_return = EEPROM_ERROR;
+
+	space_available = uxQueueSpacesAvailable(queue_to_eeprom);
+
+	if (space_available > 0)
+	{
+		send_msg.PID 	= PID;
+		send_msg.CMD_ID = EEPROM_CMD_WRITE;
+		send_msg.page 	= page;
+		send_msg.offset = offset;
+		memcpy(send_msg.data, data, size);
+		send_msg.size 	= size;
+
+		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
+		if (status == errQUEUE_FULL){
+			Error_Handler();
+		}
+
+		do{
+			status = xQueuePeek(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+			if (status == pdTRUE){
+				if(recv_msg.PID == PID)
+				{
+					status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
+				}else{
+					status = pdFALSE;
+				}
+			}
+			vTaskDelay(10);
+		}while(status != pdTRUE);
+		vTaskDelay(10);
+
+		if (recv_msg.CMD_ID == EEPROM_CMD_ACK)
+		{
+			output_return = EEPROM_OK;
+		}else{
+			output_return = EEPROM_ERROR;
+		}
+	}
+	return output_return;
+}
 
