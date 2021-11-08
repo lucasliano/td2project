@@ -77,6 +77,7 @@ xSemaphoreHandle sem_clave;
 uint8_t clave_ok = 0;
 uint16_t raw_data[LEN_MUESTRAS*N_CANALES];
 uint32_t flag_hay_datos_adc = 0;
+uint8_t rfid_internal_state = WORKING_STATE;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/

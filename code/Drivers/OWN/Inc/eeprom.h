@@ -27,8 +27,9 @@
 #define EEPROM_CMD_NACK		3
 
 //------------------- Process ID definitions --------------
-#define PID_RFID 0
-#define PID_ADC  1
+#define PID_RFID_WORKING 	0
+#define PID_RFID_ADDING		1
+#define PID_ADC  			2
 
 
 //------------------- Paginación --------------

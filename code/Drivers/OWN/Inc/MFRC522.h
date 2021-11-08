@@ -133,8 +133,11 @@ void MFRC522_Halt();
 void MFRC522_StopCrypto1(void);
 
 // ============ Declaraciones propias ================
-#define CARD_DETECTED 1
-#define CARD_NOT_FOUND 0
+#define CARD_DETECTED 0
+#define CARD_NOT_FOUND 1
+
+#define CARD_ADDED		0
+#define CARD_NOT_ADDED	1
 
 #define WAITING_CARD 	0
 #define VALIDATING_CARD 1
@@ -142,8 +145,14 @@ void MFRC522_StopCrypto1(void);
 
 #define DETECTION_TIMEOUT 1000
 
+
+#define WORKING_STATE 		0
+#define ADDING_CARD_STATE 	1
+
 void rfid_toggle_state(void);
-uint8_t rfid_find_card(void);
+uint8_t rfid_identify_card(void);
+uint8_t rfid_find_card( uint8_t* id);
 uint8_t rfid_debounce(void);
+uint8_t rfid_add_id(uint32_t id);
 
 #endif /* MFRC522_H_ */

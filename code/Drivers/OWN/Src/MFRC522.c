@@ -17,6 +17,31 @@ static uint16_t RC522_CS_Pin;
 static SPI_HandleTypeDef *spi;
 /* ===========================================*/
 
+
+uint8_t rfid_add_id(uint32_t id)
+{
+	static uint8_t current_index = 0;
+	uint8_t wbuff[4];
+	uint8_t status = CARD_NOT_ADDED;
+
+	memcpy(wbuff, &id , 4);
+
+	status = consumer_write(PID_RFID_ADDING, RFID_INIT_PAGE, 4*current_index, wbuff, 4);
+	if (status == EEPROM_OK)
+	{
+		current_index++;
+		current_index %= 2;
+
+		uint8_t valid_id[8];
+		status = consumer_read(PID_RFID_WORKING, RFID_INIT_PAGE, 0, valid_id, 8);
+		return CARD_ADDED;
+	}
+
+	return CARD_NOT_ADDED;
+}
+
+
+
 /*
  * Function Name: rfid_toggle_state
  * Function Description: Funcion que detecta si se acerco una tarjeta y togglea el estado del sistema.
@@ -54,7 +79,7 @@ uint8_t rfid_debounce(void)
 	switch(estado)
 	{
 		case WAITING_CARD:
-			if (rfid_find_card() == CARD_DETECTED)
+			if (rfid_identify_card() == CARD_DETECTED)
 			{
 				initial_time = HAL_GetTick();
 				estado = VALIDATING_CARD;
@@ -62,7 +87,7 @@ uint8_t rfid_debounce(void)
 			break;
 
 		case VALIDATING_CARD:
-			if (rfid_find_card() == CARD_NOT_FOUND)
+			if (rfid_identify_card() == CARD_NOT_FOUND)
 			{
 				estado = WAITING_CARD;
 			}else{
@@ -78,7 +103,7 @@ uint8_t rfid_debounce(void)
 
 		case REMOVING_CARD:
 			return_value = CARD_NOT_FOUND;
-			if (rfid_find_card() == CARD_NOT_FOUND)
+			if (rfid_identify_card() == CARD_NOT_FOUND)
 			{
 				estado = WAITING_CARD;
 			}
@@ -86,34 +111,27 @@ uint8_t rfid_debounce(void)
 	}
 	return return_value;
 }
+
+
 /*
- * Function Name: rfid_find_card
- * Function Description: Función encargada de detectar tarjetas.
+ * Function Name: rfid_identify_card
+ * Function Description: Función encargada de identificar si la tarjeta fue aceptada.
  * Input Parameters:
  * 					None.
  * Return value:
  *					CARD_NOT_FOUND  if card was not detected.
  *					CARD_DETECTED 	if card was detected.
  */
-uint8_t rfid_find_card(void)
+uint8_t rfid_identify_card(void)
 {
 	uint8_t status;
-	uint8_t cardstr[MAX_LEN+1];
 	uint8_t id[4];
 	uint8_t valid_id[2*4];
 
-	status = 0;
-	memset(cardstr,0,sizeof(cardstr));
-	status = (uint8_t) MFRC522_Request(PICC_REQIDL, cardstr);
-	if (status == MI_OK)
+	status = rfid_find_card(id);
+	if (status == CARD_DETECTED)
 	{
-		HAL_Delay(2);
-		MFRC522_Anticoll(cardstr);
-		memcpy(id, &cardstr , 4);
-		MFRC522_Halt();
-		HAL_Delay(2);
-
-		status = consumer_read(PID_RFID, RFID_INIT_PAGE, 0, valid_id, 8);
+		status = consumer_read(PID_RFID_WORKING, RFID_INIT_PAGE, 0, valid_id, 8);
 		if (status == EEPROM_OK)
 		{
 			for (uint8_t n = 0; n < 2; n++)
@@ -127,6 +145,39 @@ uint8_t rfid_find_card(void)
 	// Si todavia no se retorno
 	return CARD_NOT_FOUND;
 }
+
+
+/*
+ * Function Name: rfid_find_card
+ * Function Description: Función encargada de detectar tarjetas.
+ * Input Parameters:
+ * 					None.
+ * Return value:
+ *					CARD_NOT_FOUND  if card was not detected.
+ *					CARD_DETECTED 	if card was detected.
+ */
+uint8_t rfid_find_card( uint8_t* id)
+{
+	uint8_t status;
+	uint8_t cardstr[MAX_LEN+1];
+
+	status = 0;
+	memset(cardstr,0,sizeof(cardstr));
+	status = (uint8_t) MFRC522_Request(PICC_REQIDL, cardstr);
+	if (status == MI_OK)
+	{
+		HAL_Delay(2);
+		MFRC522_Anticoll(cardstr);
+		memcpy(id, &cardstr , 4);
+		MFRC522_Halt();
+		HAL_Delay(2);
+		return CARD_DETECTED;
+	}
+
+	// Si todavia no se retorno
+	return CARD_NOT_FOUND;
+}
+
 
 /*
  * Function Name: Write_MFRC5200

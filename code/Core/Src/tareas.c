@@ -19,6 +19,7 @@ extern xQueueHandle queue_to_eeprom;
 /* ---------  Variables de estado ------------*/
 extern arrebote boton[4][4];
 extern uint8_t clave_ok;
+extern uint8_t rfid_internal_state;
 /* ===========================================*/
 
 void checkear_teclado(void *p)
@@ -200,9 +201,23 @@ void detectar_rfid(void *p)
  * 		3.3V -> 	3.3
  */
 {
+	uint8_t status;
+	uint32_t new_id;
+
 	while(1)
 	{
-		rfid_toggle_state();
+		switch(rfid_internal_state)
+		{
+			case WORKING_STATE:
+				rfid_toggle_state();
+				break;
+			case ADDING_CARD_STATE:
+				while( rfid_find_card((uint8_t*) &new_id) != CARD_DETECTED);
+				status = rfid_add_id(new_id);
+				rfid_internal_state = WORKING_STATE;
+				break;
+		}
+
 		vTaskDelay(10);
 	}
 }
