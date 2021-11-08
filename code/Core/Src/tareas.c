@@ -357,7 +357,7 @@ void manejo_eeprom(void *p)
 					break;
 			}
 		}
-		vTaskDelay(10);
+		vTaskDelay(1);
 	}
 }
 

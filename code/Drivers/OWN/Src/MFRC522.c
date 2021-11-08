@@ -100,6 +100,7 @@ uint8_t rfid_find_card(void)
 	uint8_t status;
 	uint8_t cardstr[MAX_LEN+1];
 	uint8_t id[4];
+	uint8_t valid_id[2*4];
 
 	status = 0;
 	memset(cardstr,0,sizeof(cardstr));
@@ -111,9 +112,17 @@ uint8_t rfid_find_card(void)
 		memcpy(id, &cardstr , 4);
 		MFRC522_Halt();
 		HAL_Delay(2);
-		return CARD_DETECTED;
+
+		status = consumer_read(PID_RFID, RFID_INIT_PAGE, 0, valid_id, 8);
+		if (status == EEPROM_OK)
+		{
+			for (uint8_t n = 0; n < 2; n++)
+			{
+				if( memcmp(&valid_id[n*4], id, 4) == 0)
+					return CARD_DETECTED;
+			}
+		}
 	}
-	UNUSED(id); // Esto evita que el compilador tire warnings
 
 	// Si todavia no se retorno
 	return CARD_NOT_FOUND;

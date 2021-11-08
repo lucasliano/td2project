@@ -34,7 +34,7 @@ void init_eeprom(I2C_HandleTypeDef *s)
 {
 	i2c = s;
 	uint8_t wbuff[EEPROM_PAGE_SIZE];
-	uint16_t id;
+	uint32_t id;
 
 	// Escribimos toda la memoria con 0xFF
 	for (uint8_t page = 0; page < EEPROM_TOTAL_PAGES; page++)
@@ -70,11 +70,11 @@ void init_eeprom(I2C_HandleTypeDef *s)
 		wbuff[i] = 0;
 
 	// Cargo valor por default de Tarjeta ID
-	id = (uint16_t)( 2 << 24 | 50 << 16 | 121 << 8 | 195 );	// ID tarjeta blanca
+	id = (uint32_t)( 2 << 24 | 50 << 16 | 121 << 8 | 195 );	// ID tarjeta blanca
 	memcpy(wbuff, &id , 4);	// Nota: Debido al endianess, se guarda LSB primero
 	eeprom_write_page(RFID_INIT_PAGE, 0, wbuff, 4);
 	HAL_Delay(10);
-	id = (uint16_t)( 176 << 24 | 166 << 16 | 1 << 8 | 105 );	// ID llavero
+	id = (uint32_t)( 176 << 24 | 166 << 16 | 1 << 8 | 105 );	// ID llavero
 	memcpy(wbuff, &id , 4);	// Nota: Debido al endianess, se guarda LSB primero
 	eeprom_write_page(RFID_INIT_PAGE, 4, wbuff, 4);
 	HAL_Delay(10);
