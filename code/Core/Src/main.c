@@ -73,10 +73,10 @@ xQueueHandle queue_from_eeprom;
 xQueueHandle queue_to_eeprom;
 xSemaphoreHandle sem_state;
 xSemaphoreHandle sem_clave;
+xSemaphoreHandle sem_DMA;
 
 uint8_t clave_ok = 0;
 uint16_t raw_data[LEN_MUESTRAS*N_CANALES];
-uint32_t flag_hay_datos_adc = 0;
 uint8_t rfid_internal_state = WORKING_STATE;
 /* USER CODE END PFP */
 
@@ -84,9 +84,7 @@ uint8_t rfid_internal_state = WORKING_STATE;
 /* USER CODE BEGIN 0 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-	portBASE_TYPE pxHigherPriorityTaskWoken;
-	flag_hay_datos_adc++;
-	portEND_SWITCHING_ISR(pxHigherPriorityTaskWoken);
+	xSemaphoreGiveFromISR(sem_DMA, 1);
 }
 
 /* USER CODE END 0 */
@@ -141,6 +139,7 @@ int main(void)
   /* add mutexes, ... */
   sem_state = xSemaphoreCreateMutex();
   sem_clave = xSemaphoreCreateMutex();
+  sem_DMA = xSemaphoreCreateBinary();
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
@@ -168,30 +167,30 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  if(xTaskCreate(checkear_teclado,
-  		  	  "checkear_teclado",
-			  configMINIMAL_STACK_SIZE,
-  			  NULL,
-  			  1,
-  			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(detectar_sensores,
-			  "detectar_sensores",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(checkear_teclado,
+//  		  	  "checkear_teclado",
+//			  configMINIMAL_STACK_SIZE,
+//  			  NULL,
+//  			  1,
+//  			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(detectar_sensores,
+//			  "detectar_sensores",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(conexion_bt,
 //			  "conexion_bt",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(manejo_eeprom,
-			  "manejo_eeprom",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(manejo_eeprom,
+//			  "manejo_eeprom",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(actualizar_nivel_bateria,
 //			  "actualizar_nivel_bateria",
 //			  configMINIMAL_STACK_SIZE,
@@ -204,18 +203,18 @@ int main(void)
 			  NULL,
 			  1,
 			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(lcd_update,
-			  "lcd_update",
-			  configMINIMAL_STACK_SIZE,
-			  NULL,
-			  1,
-			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(detectar_rfid,
-  			  "detectar_rfid",
-			  configMINIMAL_STACK_SIZE*4,
-  			  NULL,
-  			  1,
-  			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(lcd_update,
+//			  "lcd_update",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(detectar_rfid,
+//  			  "detectar_rfid",
+//			  configMINIMAL_STACK_SIZE*4,
+//  			  NULL,
+//  			  1,
+//  			  NULL)!= pdPASS) Error_Handler();
 
 
   /* USER CODE END RTOS_THREADS */
