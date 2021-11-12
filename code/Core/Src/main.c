@@ -69,22 +69,30 @@ static void MX_USART1_UART_Init(void);
 void StartDefaultTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
-xQueueHandle queue_from_eeprom;
-xQueueHandle queue_to_eeprom;
+//xQueueHandle queue_from_eeprom;
+//xQueueHandle queue_to_eeprom;
 xSemaphoreHandle sem_state;
 xSemaphoreHandle sem_clave;
 xSemaphoreHandle sem_DMA;
+xSemaphoreHandle sem_eeprom;
 
 uint8_t clave_ok = 0;
-uint16_t raw_data[LEN_MUESTRAS*N_CANALES];
-uint8_t rfid_internal_state = WORKING_STATE;
+//uint16_t raw_data[LEN_MUESTRAS*N_CANALES];
+uint8_t rfid_internal_state = WORKING_STATE; //ADDING_CARD_STATE;
+
+uint16_t datos_adc_1[N_SAMPLES];
+uint16_t datos_adc_2[N_SAMPLES];
+uint16_t *datos_adc_dma, *datos_adc_uso;
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-	xSemaphoreGiveFromISR(sem_DMA, 1);
+	BaseType_t pxTaskWoken;
+	cambiar_punteros();
+	xSemaphoreGiveFromISR(sem_DMA,&pxTaskWoken);
+	portEND_SWITCHING_ISR(pxTaskWoken);
 }
 
 /* USER CODE END 0 */
@@ -139,7 +147,9 @@ int main(void)
   /* add mutexes, ... */
   sem_state = xSemaphoreCreateMutex();
   sem_clave = xSemaphoreCreateMutex();
+  sem_eeprom = xSemaphoreCreateMutex();
   sem_DMA = xSemaphoreCreateBinary();
+  xSemaphoreTake(sem_DMA,0);
   /* USER CODE END RTOS_MUTEX */
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
@@ -151,14 +161,14 @@ int main(void)
   /* USER CODE END RTOS_TIMERS */
 
   /* USER CODE BEGIN RTOS_QUEUES */
-  if(!(queue_from_eeprom = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
-	{
-	  	  Error_Handler();
-	}
-  if(!(queue_to_eeprom = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
-  	{
-  	  	  Error_Handler();
-  	}
+//  if(!(queue_from_eeprom = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
+//	{
+//	  	  Error_Handler();
+//	}
+//  if(!(queue_to_eeprom = xQueueCreate(EEPROM_QUEUE_LENGTH, EEPROM_QUEUE_SIZE)))
+//  	{
+//  	  	  Error_Handler();
+//  	}
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -167,26 +177,20 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-//  if(xTaskCreate(checkear_teclado,
-//  		  	  "checkear_teclado",
-//			  configMINIMAL_STACK_SIZE,
-//  			  NULL,
-//  			  1,
-//  			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(detectar_sensores,
-//			  "detectar_sensores",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(checkear_teclado,
+  		  	  "checkear_teclado",
+			  configMINIMAL_STACK_SIZE,
+  			  NULL,
+  			  1,
+  			  NULL)!= pdPASS) Error_Handler();
+  if(xTaskCreate(detectar_sensores,
+			  "detectar_sensores",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
 //  if(xTaskCreate(conexion_bt,
 //			  "conexion_bt",
-//			  configMINIMAL_STACK_SIZE,
-//			  NULL,
-//			  1,
-//			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(manejo_eeprom,
-//			  "manejo_eeprom",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
@@ -197,24 +201,37 @@ int main(void)
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-  if(xTaskCreate(checkear_power_supply,
-			  "checkear_power_supply",
+  if(xTaskCreate(lcd_update,
+			  "lcd_update",
 			  configMINIMAL_STACK_SIZE,
 			  NULL,
 			  1,
 			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(lcd_update,
-//			  "lcd_update",
+  if(xTaskCreate(detectar_rfid,
+  			  "detectar_rfid",
+			  configMINIMAL_STACK_SIZE*4,
+  			  NULL,
+  			  1,
+  			  NULL)!= pdPASS) Error_Handler();
+
+//  if(xTaskCreate(tarea_conversiones,
+//			  "tarea_conversiones",
 //			  configMINIMAL_STACK_SIZE,
 //			  NULL,
 //			  1,
 //			  NULL)!= pdPASS) Error_Handler();
-//  if(xTaskCreate(detectar_rfid,
-//  			  "detectar_rfid",
-//			  configMINIMAL_STACK_SIZE*4,
-//  			  NULL,
-//  			  1,
-//  			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(tarea_promedia,
+//			  "checkear_power_supply",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
+//  if(xTaskCreate(checkear_power_supply,
+//			  "checkear_power_supply",
+//			  configMINIMAL_STACK_SIZE,
+//			  NULL,
+//			  1,
+//			  NULL)!= pdPASS) Error_Handler();
 
 
   /* USER CODE END RTOS_THREADS */
@@ -302,7 +319,7 @@ static void MX_ADC1_Init(void)
   */
   hadc1.Instance = ADC1;
   hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
-  hadc1.Init.ContinuousConvMode = ENABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;

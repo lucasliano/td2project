@@ -7,6 +7,7 @@
 /* ========= Variables Globales ==============*/
 /* ---------     Semaforos        ------------*/
 extern xSemaphoreHandle sem_state;
+extern xSemaphoreHandle sem_eeprom;
 
 /* ---------  Colas de mensaje    ------------*/
 
@@ -26,18 +27,20 @@ uint8_t rfid_add_id(uint32_t id)
 
 	memcpy(wbuff, &id , 4);
 
-	status = consumer_write(PID_RFID_ADDING, RFID_INIT_PAGE, 4*current_index, wbuff, 4);
-	if (status == EEPROM_OK)
-	{
-		current_index++;
-		current_index %= 2;
 
-		uint8_t valid_id[8];
-		status = consumer_read(PID_RFID_WORKING, RFID_INIT_PAGE, 0, valid_id, 8);
-		return CARD_ADDED;
-	}
+	xSemaphoreTake(sem_eeprom,portMAX_DELAY);
+	status = eeprom_write_page(RFID_INIT_PAGE, 4*current_index, wbuff, 4);
+	xSemaphoreGive(sem_eeprom);
 
-	return CARD_NOT_ADDED;
+	current_index++;
+	current_index %= 2;
+
+	uint8_t valid_id[8];
+	xSemaphoreTake(sem_eeprom,portMAX_DELAY);
+	eeprom_read_page(RFID_INIT_PAGE, 0, valid_id, 8);
+	xSemaphoreGive(sem_eeprom);
+
+	return CARD_ADDED;
 }
 
 
@@ -75,11 +78,12 @@ uint8_t rfid_debounce(void)
 	static uint32_t initial_time = 0;
 	uint8_t return_value = CARD_NOT_FOUND;
 	uint32_t current_time = 0;
+	uint8_t id[4];	// Not important here
 
 	switch(estado)
 	{
 		case WAITING_CARD:
-			if (rfid_identify_card() == CARD_DETECTED)
+			if (rfid_find_card(id) == CARD_DETECTED)
 			{
 				initial_time = HAL_GetTick();
 				estado = VALIDATING_CARD;
@@ -87,23 +91,29 @@ uint8_t rfid_debounce(void)
 			break;
 
 		case VALIDATING_CARD:
-			if (rfid_identify_card() == CARD_NOT_FOUND)
+			if (rfid_find_card(id) == CARD_NOT_FOUND)
 			{
 				estado = WAITING_CARD;
 			}else{
 				current_time = HAL_GetTick();
 				if (current_time - initial_time >= DETECTION_TIMEOUT)
 				{
-					initial_time = 0;
-					estado = REMOVING_CARD;
-					return_value = CARD_DETECTED;
+					if (rfid_identify_card() == CARD_DETECTED)
+					{
+						initial_time = 0;
+						estado = REMOVING_CARD;
+						return_value = CARD_DETECTED;
+					}else{
+						initial_time = 0;
+						estado = REMOVING_CARD;
+					}
 				}
 			}
 			break;
 
 		case REMOVING_CARD:
 			return_value = CARD_NOT_FOUND;
-			if (rfid_identify_card() == CARD_NOT_FOUND)
+			if (rfid_find_card(id) == CARD_NOT_FOUND)
 			{
 				estado = WAITING_CARD;
 			}
@@ -131,14 +141,15 @@ uint8_t rfid_identify_card(void)
 	status = rfid_find_card(id);
 	if (status == CARD_DETECTED)
 	{
-		status = consumer_read(PID_RFID_WORKING, RFID_INIT_PAGE, 0, valid_id, 8);
-		if (status == EEPROM_OK)
+
+		xSemaphoreTake(sem_eeprom,portMAX_DELAY);
+		eeprom_read_page(RFID_INIT_PAGE, 0, valid_id, 8);
+		xSemaphoreGive(sem_eeprom);
+
+		for (uint8_t n = 0; n < 2; n++)
 		{
-			for (uint8_t n = 0; n < 2; n++)
-			{
-				if( memcmp(&valid_id[n*4], id, 4) == 0)
-					return CARD_DETECTED;
-			}
+			if( memcmp(&valid_id[n*4], id, 4) == 0)
+				return CARD_DETECTED;
 		}
 	}
 

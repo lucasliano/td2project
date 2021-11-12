@@ -241,6 +241,7 @@ void detectar_sensores(void *p)
 				estado=1;
 				clave_ok = 0; //Bajo el flag
 				toggle_led(LED_1);
+				save_event(EVENT_ALARM_ON);
 				start_buzzer(500, 500, 5);
 			}
 			xSemaphoreGive(sem_state);
@@ -257,6 +258,7 @@ void detectar_sensores(void *p)
 			if(clave_ok){
 				estado=0;
 				clave_ok = 0; //Bajo el flag
+				save_event(EVENT_ALARM_OFF);
 				toggle_led(LED_1);
 			}
 			xSemaphoreGive(sem_state);
@@ -278,115 +280,21 @@ void checkear_power_supply(void *p)
 }
 
 
-void manejo_eeprom(void *p)
-/*
- * ======== manejo_eeprom =============
- * Tarea orientada a resolver el problema de escrituras y lecturas a la eeprom por varios
- * consumidores. Se utilizan colas con dicho proposito.
- *
- *
- */
-{
-
-	// Cola de mensajes
-	uint8_t rbuff [EEPROM_PAGE_SIZE];
-	uint8_t wbuff [EEPROM_PAGE_SIZE];
-	uint8_t i2c_status;
-	uint8_t status;
-	struct eeprom_message recv_msg;
-	struct eeprom_message send_msg;
-
-
-	while(1)
-	{
-		i2c_status = EEPROM_ERROR;
-		status = xQueueReceive(queue_to_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-		if (status == pdTRUE)
-		{
-			switch(recv_msg.CMD_ID)
-			{
-				case EEPROM_CMD_READ:
-					i2c_status = eeprom_read_page(recv_msg.page, recv_msg.offset, rbuff, recv_msg.size);
-					if (i2c_status == EEPROM_ERROR) Error_Handler();
-					send_msg.PID 	= recv_msg.PID;
-					send_msg.CMD_ID = EEPROM_CMD_ACK;	//ACK
-					send_msg.page 	= recv_msg.page;
-					send_msg.page 	= recv_msg.offset;
-					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-						send_msg.data[j] = rbuff[j];
-					send_msg.size 	= recv_msg.size;
-
-					send_msg_from_eeprom(&send_msg);
-
-					break;
-
-				case EEPROM_CMD_WRITE:
-					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-						wbuff[j] = recv_msg.data[j];
-					i2c_status = eeprom_write_page(recv_msg.page, recv_msg.offset, wbuff, recv_msg.size);
-					if (i2c_status == EEPROM_ERROR) Error_Handler();
-
-					vTaskDelay(100);
-					i2c_status = eeprom_read_page(recv_msg.page, recv_msg.offset, rbuff, recv_msg.size);
-					if (i2c_status == EEPROM_ERROR) Error_Handler();
-
-					for (int i = 0; i < recv_msg.size; i++)
-					{
-						if(rbuff[i] != recv_msg.data[i]) // Si lo que escribiste es distinto a lo leido
-						{
-							send_msg.PID 	= recv_msg.PID;
-							send_msg.CMD_ID = EEPROM_CMD_NACK;	//ERROR
-							send_msg.page 	= 0;
-							send_msg.offset 	= 0;
-							for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-								send_msg.data[j] = 0;
-							send_msg.size 	= 0;
-
-							send_msg_from_eeprom(&send_msg);
-							break;
-						}
-					}
-
-					// Si llegamos acá es porque se escribió bien.
-					send_msg.PID 	= recv_msg.PID;
-					send_msg.CMD_ID = EEPROM_CMD_ACK;	//ACK
-					send_msg.page 	= 0;
-					send_msg.offset = 0;
-					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-						send_msg.data[j] = 0;
-					send_msg.size 	= 0;
-
-					send_msg_from_eeprom(&send_msg);
-					break;
-
-				default:
-					send_msg.PID 	= recv_msg.PID;
-					send_msg.CMD_ID = EEPROM_CMD_NACK;	//ERROR
-					send_msg.page 	= 0;
-					send_msg.offset = 0;
-					for (int j = 0; j < EEPROM_PAGE_SIZE; j++)
-						send_msg.data[j] = 0;
-					send_msg.size 	= 0;
-
-					send_msg_from_eeprom(&send_msg);
-					break;
-			}
-		}
-		vTaskDelay(1);
-	}
-}
 
 void lcd_update(void *p)
 {
-	char str[16];
 	while(1)
 	{
+		char str[16];
+
 		lcd_clear();
 		lcd_cursor(0, 0);
-		lcd_send_string ("HORA:");
+		lcd_send_string ("HORA:",5);
+
+//		hora_to_str(obtener_tiempo(), str);
+//		lcd_cursor(0,7);
+//		lcd_send_string (str,8);
 //		lcd_cursor(1, 0);
-//		sprintf(str, "%d", (uint16_t) HAL_GetTick());
-		lcd_send_string(str);
 
 		vTaskDelay(1000);
 	}
@@ -429,4 +337,6 @@ void conexion_bt(void *p)
 //		vTaskDelay(100);
 //	}
 }
+
+
 

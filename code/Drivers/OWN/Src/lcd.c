@@ -94,8 +94,13 @@ void lcd_cursor(int row, int col)
     lcd_send_cmd (col);
 }
 
-void lcd_send_string (char *str)
+void lcd_send_string (char* str, uint8_t size)
 {
-	while (*str) lcd_send_data (*str++);
+	uint8_t dato;
+	for(uint8_t i = 0; i < size ; i++)
+	{
+		dato = str[i];
+		lcd_send_data (dato);
+	}
 }
 

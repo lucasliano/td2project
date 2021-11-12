@@ -13,10 +13,11 @@ extern uint8_t clave[4];
 
 /* ---------     Semaforos        ------------*/
 extern xSemaphoreHandle sem_clave;
+extern xSemaphoreHandle sem_eeprom;
 
 /* ---------  Colas de mensaje    ------------*/
-extern xQueueHandle queue_from_eeprom;
-extern xQueueHandle queue_to_eeprom;
+//extern xQueueHandle queue_from_eeprom;
+//extern xQueueHandle queue_to_eeprom;
 
 /* ---------  Variables de estado ------------*/
 static I2C_HandleTypeDef* i2c;
@@ -178,151 +179,50 @@ uint8_t eeprom_read_page(uint8_t page, uint8_t offset, uint8_t* rbuff, uint8_t s
 }
 
 
-
 /*
- * Function Name: send_msg_from_eeprom
- * Function Description: Función que carga en la cola queue_from_eeprom mensajes a enviar..
+ * Function Name: save_event
+ * Function Description: Función llamada a nivel de tarea para guardar un evento.
  * Input Parameters:
- * 					struct eeprom_message* send_msg - Estructura con mensaje cargado para enviar.
- * Return value:
- * 					None.
- */
-void send_msg_from_eeprom(struct eeprom_message* send_msg)
-{
-	uint8_t space_available = 0;
-	uint8_t status;
-
-	do{
-		vTaskDelay(10);
-		space_available = uxQueueSpacesAvailable(queue_from_eeprom);
-	}while(!space_available);
-
-	status = xQueueSend(queue_from_eeprom, send_msg, EEPROM_MAX_QUEUE_DELAY);
-	if (status == errQUEUE_FULL){
-		Error_Handler();
-	}
-}
-
-/*
- * Function Name: consumer_read
- * Function Description: Función llamada a nivel de tarea para realizar lecturas.
- * Input Parameters:
- * 					uint8_t PID - Identificador del task que llama a la función.
- * 					uint8_t page - Página que se desea leer.
- * 					uint8_t offset - Byte a partir del cual se quiere realizar la lectura.
- * 					uint8_t* data - Puntero al array donde se van a guardar los datos.
- * 					uint8_t size - Cantidad de bytes a leer.
- * Return value:
- * 					EEPROM_OK si funciono la lectura.
- * 					EEPROM_ERROR si no funciono.
- */
-uint8_t consumer_read(uint8_t PID, uint8_t page, uint8_t offset, uint8_t* data, uint8_t size)
-{
-	struct eeprom_message send_msg;
-	struct eeprom_message recv_msg;
-	uint8_t status;
-	uint8_t space_available = 0;
-	uint8_t output_return = EEPROM_ERROR;
-
-	space_available = uxQueueSpacesAvailable(queue_to_eeprom);
-
-	if (space_available > 0)
-	{
-		send_msg.PID 	= PID;
-		send_msg.CMD_ID = EEPROM_CMD_READ;
-		send_msg.page 	= page;
-		send_msg.offset = offset;
-		send_msg.size 	= size;
-		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-		if (status == errQUEUE_FULL){
-			return EEPROM_ERROR;
-			Error_Handler();
-		}
-
-		do{
-			status = xQueuePeek(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-			if (status == pdTRUE){
-				if(recv_msg.PID == PID)
-				{
-					status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-				}else{
-					status = pdFALSE;
-				}
-			}
-			vTaskDelay(10);
-		}while(status != pdTRUE);
-		vTaskDelay(10);
-
-		if (recv_msg.CMD_ID == EEPROM_CMD_ACK)
-		{
-			memcpy(data, recv_msg.data, size);
-			output_return = EEPROM_OK;
-		}else{
-			output_return = EEPROM_ERROR;
-		}
-	}
-	return output_return;
-}
-
-
-/*
- * Function Name: consumer_read
- * Function Description: Función llamada a nivel de tarea para realizar escrituras.
- * Input Parameters:
- * 					uint8_t PID - Identificador del task que llama a la función.
- * 					uint8_t page - Página que se desea escribir.
- * 					uint8_t offset - Byte a partir del cual se quiere realizar la escritura.
- * 					uint8_t* data - Puntero al array donde encuentran los datos.
- * 					uint8_t size - Cantidad de bytes a escribir.
+ * 					uint8_t event - Identificador del evento sucedido.
  * Return value:
  * 					EEPROM_OK si funciono la escritura.
  * 					EEPROM_ERROR si no funciono.
  */
-uint8_t consumer_write(uint8_t PID, uint8_t page, uint8_t offset, uint8_t* data, uint8_t size)
+uint8_t save_event(uint8_t event)
 {
-	struct eeprom_message send_msg;
-	struct eeprom_message recv_msg;
-	uint8_t status;
-	uint8_t space_available = 0;
-	uint8_t output_return = EEPROM_ERROR;
+	static uint8_t mem_pointer_index = 0;
+	uint8_t status = EEPROM_ERROR;
 
-	space_available = uxQueueSpacesAvailable(queue_to_eeprom);
+	struct eeprom_logs_block data;
+	uint8_t page;
+	uint8_t offset;
 
-	if (space_available > 0)
-	{
-		send_msg.PID 	= PID;
-		send_msg.CMD_ID = EEPROM_CMD_WRITE;
-		send_msg.page 	= page;
-		send_msg.offset = offset;
-		memcpy(send_msg.data, data, size);
-		send_msg.size 	= size;
+	page = mem_pointer_index / 2;	// Divisio-n entera
+	offset = mem_pointer_index % 2;	// Resto
 
-		status = xQueueSend(queue_to_eeprom, &send_msg, EEPROM_MAX_QUEUE_DELAY);
-		if (status == errQUEUE_FULL){
-			Error_Handler();
-		}
+	data.evento = event;
+	data.hora = obtener_tiempo();
 
-		do{
-			status = xQueuePeek(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-			if (status == pdTRUE){
-				if(recv_msg.PID == PID)
-				{
-					status = xQueueReceive(queue_from_eeprom, &recv_msg, EEPROM_MAX_QUEUE_DELAY);
-				}else{
-					status = pdFALSE;
-				}
-			}
-			vTaskDelay(10);
-		}while(status != pdTRUE);
-		vTaskDelay(10);
+	xSemaphoreTake(sem_eeprom,portMAX_DELAY);
+	status = eeprom_write_page(LOGS_INIT_PAGE+page, offset*4, (uint8_t*) &data, sizeof(data));
+	xSemaphoreGive(sem_eeprom);
 
-		if (recv_msg.CMD_ID == EEPROM_CMD_ACK)
-		{
-			output_return = EEPROM_OK;
-		}else{
-			output_return = EEPROM_ERROR;
-		}
-	}
-	return output_return;
+	mem_pointer_index++;
+	mem_pointer_index %= LOGS_BLOCK_DEPTH*2;
+
+	return status;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 

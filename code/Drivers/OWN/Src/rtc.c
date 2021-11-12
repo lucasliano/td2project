@@ -10,17 +10,15 @@
 extern RTC_HandleTypeDef hrtc;
 
 
-uint8_t obtener_tiempo(uint8_t dato){
+RTC_TimeTypeDef obtener_tiempo(void){
 	RTC_TimeTypeDef tiempo={0};
 
 	HAL_RTC_GetTime(&hrtc,&tiempo,RTC_FORMAT_BIN);
 
-	if(dato == HORA)
-		return tiempo.Hours;
-	else if (dato == MINUTOS)
-		return tiempo.Minutes;
-	else
-		return 0xFF;
+	return tiempo;
+}
 
-
+void hora_to_str(RTC_TimeTypeDef hora, char* str)
+{
+	sprintf(str, "%02d:%02d:%02d", hora.Hours, hora.Minutes, hora.Seconds);
 }
