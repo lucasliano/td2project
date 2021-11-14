@@ -62,7 +62,7 @@ Should an error occurred, a notification will be sent to the mobile device and i
 #### System Diagram
 <p align="center">
   <a href="https://github.com/lucasliano/td2project">
-    <img src="diagrama/Diagrama.png" alt="Diagram" width=75%>
+    <img src="diagrama/block_diagram_background.png" alt="Diagram" width=75%>
   </a>
 </p>
 
