@@ -1,0 +1,6 @@
+eeprom.c:104:9:write_eeprom	24	static
+eeprom.c:127:9:read_eeprom	24	static
+eeprom.c:151:9:eeprom_write_page	4	static
+eeprom.c:172:9:eeprom_read_page	4	static
+eeprom.c:34:6:init_eeprom	32	static
+eeprom.c:191:9:save_event	24	static

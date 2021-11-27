@@ -1,0 +1,6 @@
+lcd.c:50:6:lcd_send_cmd	24	static
+lcd.c:64:6:lcd_send_data	24	static
+lcd.c:77:6:lcd_clear	0	static
+lcd.c:21:6:lcd_init	8	static
+lcd.c:82:6:lcd_cursor	0	static
+lcd.c:97:6:lcd_send_string	16	static
