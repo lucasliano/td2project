@@ -64,8 +64,11 @@ all: main-build
 # Main-build Target
 main-build: software.elf secondary-outputs
 
+dependents:
+	-cd /home/lliano/Desktop/td2project/software/Release && $(MAKE) all
+
 # Tool invocations
-software.elf: $(OBJS) $(USER_OBJS) /home/lliano/Desktop/td2project/software/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+software.elf: $(OBJS) $(USER_OBJS) /home/lliano/Desktop/td2project/software/Release/software.elf /home/lliano/Desktop/td2project/software/STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	arm-none-eabi-gcc -o "software.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/lliano/Desktop/td2project/software/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="software.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
@@ -100,5 +103,6 @@ warn-no-linker-script-specified:
 	@echo 'Warning: No linker script specified. Check the linker settings in the build configuration.'
 
 .PHONY: all clean dependents fail-specified-linker-script-missing warn-no-linker-script-specified
+/home/lliano/Desktop/td2project/software/Release/software.elf:
 
 -include ../makefile.targets

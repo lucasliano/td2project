@@ -186,12 +186,12 @@ int main(void)
   //			  NULL,
   //			  1,
   //			  NULL)!= pdPASS) Error_Handler();
-  //  if(xTaskCreate(lcd_update,
-  //			  "lcd_update",
-  //			  configMINIMAL_STACK_SIZE,
-  //			  NULL,
-  //			  1,
-  //			  NULL)!= pdPASS) Error_Handler();
+    if(xTaskCreate(lcd_update,
+  			  "lcd_update",
+  			  configMINIMAL_STACK_SIZE,
+  			  NULL,
+  			  1,
+  			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(detectar_rfid,
     			  "detectar_rfid",
   			  configMINIMAL_STACK_SIZE*4,

@@ -3,7 +3,7 @@
 	<name>software</name>
 	<comment></comment>
 	<projects>
-		<project>prueba_adc</project>
+		<project>software</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

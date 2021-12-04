@@ -232,14 +232,14 @@ void detectar_sensores(void *p)
  */
 {
 	// (Dependiendo del estado de la alarma, debe hacer sonar el buzzer)
-	uint8_t estado=0;
+	uint8_t estado = APAGADO;
 
 	for(;;){
 		switch(estado){
-		case 0:				//APAGADO
+		case APAGADO:
 			xSemaphoreTake(sem_state,portMAX_DELAY);
 			if(clave_ok){
-				estado=1;
+				estado = ENCENDIDIO;
 				clave_ok = 0; //Bajo el flag
 				toggle_led(LED_1);
 				save_event(EVENT_ALARM_ON);
@@ -248,21 +248,45 @@ void detectar_sensores(void *p)
 			xSemaphoreGive(sem_state);
 			break;
 
-		case 1:				//ENCENDIDO
-			/*if(leer_sensor(1)){
-
+		case ENCENDIDIO:
+			if(leer_sensor(1)){
+				// Area 2
+				save_event(EVENT_ALARM_BEEP_SALA1);
+				estado = ALARMANDO;
 			}
 			if(leer_sensor(2)){
+				// Area 2
+				save_event(EVENT_ALARM_BEEP_SALA2);
+				estado = ALARMANDO;
+			}
 
-			}*/
 			xSemaphoreTake(sem_state,portMAX_DELAY);
 			if(clave_ok){
-				estado=0;
+				estado = APAGADO;
 				clave_ok = 0; //Bajo el flag
 				save_event(EVENT_ALARM_OFF);
 				toggle_led(LED_1);
 			}
 			xSemaphoreGive(sem_state);
+			break;
+
+		case ALARMANDO:
+
+			start_buzzer(100, 100, 5);
+
+			xSemaphoreTake(sem_state,portMAX_DELAY);
+			if(clave_ok){
+				estado = APAGADO;
+				clave_ok = 0; //Bajo el flag
+				save_event(EVENT_ALARM_OFF);
+				toggle_led(LED_1);
+			}
+			xSemaphoreGive(sem_state);
+			break;
+
+		default:
+			estado = APAGADO;
+			clave_ok = 0;
 			break;
 
 		}
@@ -291,24 +315,29 @@ void lcd_update(void *p)
 		uint8_t batt_level = 0;
 
 		lcd_clear();
+		vTaskDelay(30);
+
 		lcd_cursor(0, 0);
 		lcd_send_string ("HORA:",5);
+		vTaskDelay(30);
 
-//		hora_to_str(obtener_tiempo(), str);
-//		lcd_cursor(0,7);
-//		lcd_send_string (str,8);
+		hora_to_str(obtener_tiempo(), str);
+		lcd_cursor(0,7);
+		lcd_send_string (str,8);
 
 		lcd_cursor(1, 0);
-		lcd_send_string ("BATERIA:",8);
+		lcd_send_string ("BATERIA: |    |",15);
+		vTaskDelay(30);
 
 		batt_level = adc_get_batt_level();
 		for (uint8_t i = 0; i < batt_level; i++)
 		{
 			lcd_cursor(1, 10 + i);
-			lcd_send_string ("▓",1);
+			lcd_send_string (0xFF,1);
+			vTaskDelay(30);
 		}
 
-		vTaskDelay(1000);
+		vTaskDelay(5000);
 	}
 }
 

@@ -1,2 +1,0 @@
-rtc.c:13:17:obtener_tiempo	16	static
-rtc.c:21:6:hora_to_str	24	static

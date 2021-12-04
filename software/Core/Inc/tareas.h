@@ -12,11 +12,17 @@
 
 
 //------------------- Eventos --------------------------------
-#define EVENT_ALARM_ON		0
-#define EVENT_ALARM_OFF		1
-#define EVENT_ALARM_BEEP	2
-#define EVENT_POWER_ON		3
-#define EVENT_POWER_OFF		4
+#define EVENT_ALARM_ON			0
+#define EVENT_ALARM_OFF			1
+#define EVENT_POWER_ON			2
+#define EVENT_POWER_OFF			3
+#define EVENT_ALARM_BEEP_SALA1	4
+#define EVENT_ALARM_BEEP_SALA2	5
+
+//------------------- Estados -------------------------------
+#define APAGADO				0
+#define ENCENDIDIO			1
+#define ALARMANDO			2
 
 
 //------------------- Funciones ------------------------------
