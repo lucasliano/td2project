@@ -1,6 +1,0 @@
-tareas.c:26:6:checkear_teclado	40	static
-tareas.c:187:6:detectar_rfid	24	static
-tareas.c:226:6:detectar_sensores	16	static
-tareas.c:297:6:checkear_power_supply	8	static
-tareas.c:310:6:lcd_update	16	static
-tareas.c:344:6:conexion_bt	0	static

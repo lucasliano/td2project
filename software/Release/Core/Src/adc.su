@@ -1,8 +1,0 @@
-adc.c:32:6:inic_punteros	16	static
-adc.c:40:6:adc_init	8	static
-adc.c:52:6:cambiar_punteros	8	static
-adc.c:23:6:HAL_ADC_ConvCpltCallback	16	static,ignoring_inline_asm
-adc.c:67:6:tarea_conversiones	8	static
-adc.c:76:6:update_adc	16	static
-adc.c:94:6:fsm_power_supply	8	static
-adc.c:120:9:adc_get_batt_level	0	static
