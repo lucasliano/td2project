@@ -17,8 +17,3 @@ RTC_TimeTypeDef obtener_tiempo(void){
 
 	return tiempo;
 }
-
-void hora_to_str(RTC_TimeTypeDef hora, char* str)
-{
-	strcpy(str, "%02d:%02d:%02d", hora.Hours, hora.Minutes, hora.Seconds);
-}

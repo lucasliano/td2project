@@ -44,7 +44,7 @@ void adc_init(ADC_HandleTypeDef* handler)
 	HAL_Delay(100);
 	inic_punteros();
 	adc_buffer.power_supply = 0xFFFFFFFF;
-	adc_buffer.batt = 0xFFFFFFFF;
+	adc_buffer.batt = 0x0;
 
 }
 

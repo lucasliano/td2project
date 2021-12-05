@@ -309,21 +309,31 @@ void checkear_power_supply(void *p)
 
 void lcd_update(void *p)
 {
+	char hora_str[64];
+	char batt_char[] = {(char)0xFF};
+	uint8_t batt_level = 0;
+	RTC_TimeTypeDef hora;
+
+	for (uint8_t jj = 0; jj < 8; jj++)
+	{
+		hora_str[jj] = 'X';
+	}
+
 	while(1)
 	{
-		char str[16];
-		uint8_t batt_level = 0;
-
-		lcd_clear();
+		lcd_clear ();
 		vTaskDelay(30);
 
 		lcd_cursor(0, 0);
 		lcd_send_string ("HORA:",5);
 		vTaskDelay(30);
 
-		hora_to_str(obtener_tiempo(), str);
+
+//		hora = obtener_tiempo();
+//		sprintf(hora_str, "%02d:%02d:%02d", hora.Hours, hora.Minutes, hora.Seconds);
+
 		lcd_cursor(0,7);
-		lcd_send_string (str,8);
+		lcd_send_string (hora_str,8);
 
 		lcd_cursor(1, 0);
 		lcd_send_string ("BATERIA: |    |",15);
@@ -333,11 +343,11 @@ void lcd_update(void *p)
 		for (uint8_t i = 0; i < batt_level; i++)
 		{
 			lcd_cursor(1, 10 + i);
-			lcd_send_string (0xFF,1);
+			lcd_send_string (batt_char,1);
 			vTaskDelay(30);
 		}
 
-		vTaskDelay(5000);
+		vTaskDelay(1000);
 	}
 }
 

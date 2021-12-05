@@ -15,7 +15,6 @@
 #define MINUTOS 1
 
 RTC_TimeTypeDef obtener_tiempo(void);
-void hora_to_str(RTC_TimeTypeDef hora, char* str);
 
 
 #endif /* INC_RTC_H_ */
