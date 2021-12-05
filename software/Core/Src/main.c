@@ -188,7 +188,7 @@ int main(void)
   //			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(lcd_update,
   			  "lcd_update",
-  			  configMINIMAL_STACK_SIZE,
+  			  configMINIMAL_STACK_SIZE*4,
   			  NULL,
   			  1,
   			  NULL)!= pdPASS) Error_Handler();

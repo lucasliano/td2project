@@ -329,8 +329,8 @@ void lcd_update(void *p)
 		vTaskDelay(30);
 
 
-//		hora = obtener_tiempo();
-//		sprintf(hora_str, "%02d:%02d:%02d", hora.Hours, hora.Minutes, hora.Seconds);
+		hora = obtener_tiempo();
+		sprintf(hora_str, "%02d:%02d:%02d", hora.Hours, hora.Minutes, hora.Seconds);
 
 		lcd_cursor(0,7);
 		lcd_send_string (hora_str,8);
