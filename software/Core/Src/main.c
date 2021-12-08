@@ -137,6 +137,7 @@ int main(void)
   init_eeprom(&hi2c1);
   lcd_init (&hi2c1);
   adc_init (&hadc1);
+  serieFreeRTOS_inicializar(&huart1, 64);
 
   /* USER CODE END 2 */
 
@@ -178,14 +179,8 @@ int main(void)
   			  "detectar_sensores",
   			  configMINIMAL_STACK_SIZE,
   			  NULL,
-  			  1,
+  			  2,
   			  NULL)!= pdPASS) Error_Handler();
-  //  if(xTaskCreate(conexion_bt,
-  //			  "conexion_bt",
-  //			  configMINIMAL_STACK_SIZE,
-  //			  NULL,
-  //			  1,
-  //			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(lcd_update,
   			  "lcd_update",
   			  configMINIMAL_STACK_SIZE*4,
@@ -196,21 +191,27 @@ int main(void)
     			  "detectar_rfid",
   			  configMINIMAL_STACK_SIZE*4,
     			  NULL,
-    			  1,
+    			  2,
     			  NULL)!= pdPASS) Error_Handler();
 
     if(xTaskCreate(tarea_conversiones,
   			  "tarea_conversiones",
   			  configMINIMAL_STACK_SIZE,
   			  NULL,
-  			  1,
+  			  2,
   			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(checkear_power_supply,
   			  "checkear_power_supply",
   			  configMINIMAL_STACK_SIZE,
   			  NULL,
-  			  1,
+  			  3,
   			  NULL)!= pdPASS) Error_Handler();
+    if(xTaskCreate(tarea_serie,
+			  "tarea_serie",
+			  configMINIMAL_STACK_SIZE,
+			  NULL,
+			  3,
+			  NULL)!= pdPASS) Error_Handler();
 
 
 
@@ -451,9 +452,9 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
   huart1.Init.BaudRate = 9600;
-  huart1.Init.WordLength = UART_WORDLENGTH_9B;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
   huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_EVEN;
+  huart1.Init.Parity = UART_PARITY_NONE;
   huart1.Init.Mode = UART_MODE_TX_RX;
   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;

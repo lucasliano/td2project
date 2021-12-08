@@ -351,12 +351,31 @@ void lcd_update(void *p)
 	}
 }
 
-void conexion_bt(void *p)
+void tarea_serie(void *p)
 {
-//	// Maquinas de estados con ESPERANDO_CONEXION - ESPERANDO_COMANDO - ACTUANDO
-
-
+	uint8_t dato[LEN_BUFFER_RX];	//Los ultimos 2 elementos son el CR+LF
+	uint8_t i=0;
+	for(;;)
+	{
+		for(i=0;i<(LEN_BUFFER_RX);i++){
+			dato[i] = serieFreeRTOS_getchar();
+		}
+		if(dato[0]=='#' && dato[5]=='#'){
+			for(i=1;i<3;i++)
+				serieFreeRTOS_putchar(dato[i]);
+		}
+		else if (dato[0]=='$' && dato[5]=='$'){
+			for(i=0;i<2;i++)
+				serieFreeRTOS_putchar(dato[i]);
+		}
+		else if (dato[0]=='%' && dato[5]=='%'){
+			for(i=2;i<4;i++)
+				serieFreeRTOS_putchar(dato[i]);
+		}
+	}
 }
+
+
 
 
 
