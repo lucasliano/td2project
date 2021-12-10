@@ -11,16 +11,24 @@
 #include "cmsis_os.h"
 #include "stm32f1xx_hal.h"
 
-#define LEN_BUFFER_RX 8
-#define LEN_BUFFER_TX 8
+//---------- Buffers ----------------
+#define LEN_BUFFER_RX LARGO_CLAVE
+#define LEN_BUFFER_TX 32
 
-void bt_inicializar(UART_HandleTypeDef *huart);
-void bt_tx(uint8_t *datos, uint32_t len);
-void bt_rx(uint8_t *datos, uint32_t len);
-void tarea_rx(void *p);
-void tarea_tx(void *p);
+//---------- Commands ---------------
+#define CMD_CLAVE	'C'
+#define CMD_RFID	'R'
+#define CMD_MEM		'M'
 
-#include "main.h"
+//---------- Estados ----------------
+#define ESPERANDO_INICIO	0
+#define ESPERANDO_CLAVE		1
+#define ESPERANDO_CMD		2
+#define ESPERANDO_DATOS		3
+#define ESPERANDO_FIN1		4
+#define ESPERANDO_FIN2		5
+
+//--------- funciones ----------------
 void serieFreeRTOS_inicializar(UART_HandleTypeDef *huart, uint32_t len_colas);
 void serieFreeRTOS_IRQ(void);
 void serieFreeRTOS_putchar(uint8_t dato);

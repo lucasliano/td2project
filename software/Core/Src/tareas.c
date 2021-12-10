@@ -352,26 +352,135 @@ void lcd_update(void *p)
 }
 
 void tarea_serie(void *p)
+/*
+ * 	Trama utilizada:
+ * 		1b 	 - '$' 		- Inicio de trama
+ * 		Yb	 - clave	- Clave para desbloquear el sistema. Largo = LARGO_CLAVE
+ * 		1b 	 - cmd		- Comando
+ * 		Nb	 - datos	- LEN_BUFFER_RX bytes max
+ * 		0xD	 - 'CR'		- fin de trama x1
+ * 		0xA	 - 'LF'		- fin de trama x2
+ */
+
 {
-	uint8_t dato[LEN_BUFFER_RX];	//Los ultimos 2 elementos son el CR+LF
-	uint8_t i=0;
-	for(;;)
+	uint8_t byte_recibido = 0x0;
+	static uint8_t estado = ESPERANDO_INICIO;
+	static uint8_t contador = 0;
+	static uint8_t clave[LARGO_CLAVE+1];
+	static uint8_t datos[LEN_BUFFER_RX];
+	static uint8_t cmd = 255;
+
+	while(1)
 	{
-		for(i=0;i<(LEN_BUFFER_RX);i++){
-			dato[i] = serieFreeRTOS_getchar();
+		byte_recibido = serieFreeRTOS_getchar();
+		switch(estado)
+		{
+			case ESPERANDO_INICIO:
+				if (byte_recibido == '$')
+				{
+					estado = ESPERANDO_CLAVE;
+					for (uint8_t i = 0; i < LEN_BUFFER_RX; i++)
+						datos[i] = ' ';
+				}
+				break;
+			case ESPERANDO_CLAVE:
+				if (contador < LARGO_CLAVE-1)
+				{
+					clave[contador] = byte_recibido;
+					contador++;
+				}else{
+					clave[contador] = byte_recibido;
+					contador = 0;
+					clave[LARGO_CLAVE] = '#';
+					if(chequear_clave(clave) ){
+						estado = ESPERANDO_CMD;
+					}
+					else{
+						estado = ESPERANDO_INICIO;
+					}
+				}
+				break;
+			case ESPERANDO_CMD:
+				cmd = byte_recibido;
+				estado = ESPERANDO_DATOS;
+				break;
+			case ESPERANDO_DATOS:
+				switch(cmd)
+				{
+					case CMD_CLAVE:
+						if (contador < LARGO_CLAVE-1)
+						{
+							datos[contador] = byte_recibido;
+							contador++;
+
+							//Filtro de valores numericos
+							if (byte_recibido < 48 || byte_recibido > 57)
+							{
+								contador = 0;
+								estado = ESPERANDO_INICIO;
+								cmd = 255;
+							}
+						}else{
+							datos[contador] = byte_recibido;
+							contador = 0;
+							estado = ESPERANDO_FIN1;
+							cmd = 255;
+						}
+						break;
+					case CMD_RFID:
+						if (byte_recibido == 'R')
+						{
+							estado = ESPERANDO_FIN1;
+						}else{
+							estado = ESPERANDO_INICIO;
+						}
+						cmd = 255;
+						break;
+					case CMD_MEM:
+						if (byte_recibido > 2*LOGS_BLOCK_DEPTH || byte_recibido == 0)
+						{
+							estado = ESPERANDO_INICIO;
+							cmd = 255;
+						}else{
+							datos[0] = byte_recibido;
+							estado = ESPERANDO_FIN1;
+							cmd = 255;
+						}
+						break;
+					default:
+						estado = ESPERANDO_INICIO;
+						cmd = 255;
+				}
+				break;
+			case ESPERANDO_FIN1:
+				if (byte_recibido == 0xD)
+				{
+					estado = ESPERANDO_FIN2;
+				}else{
+					estado = ESPERANDO_INICIO;
+				}
+				break;
+			case ESPERANDO_FIN2:
+				if (byte_recibido == 0xA)
+				{
+					// Acá hay que ejecutar lo que queremos que pase.
+					serieFreeRTOS_putchar('$');
+					for (uint8_t i = 0; i < LEN_BUFFER_RX; i++)
+					{
+						serieFreeRTOS_putchar(datos[i]);
+					}
+					serieFreeRTOS_putchar(0xD);
+					serieFreeRTOS_putchar(0xA);
+				}
+				estado = ESPERANDO_INICIO;
+				break;
+			default:
+				estado = ESPERANDO_INICIO;
+				cmd = 255;
+				contador = 0;
+				break;
 		}
-		if(dato[0]=='#' && dato[5]=='#'){
-			for(i=1;i<3;i++)
-				serieFreeRTOS_putchar(dato[i]);
-		}
-		else if (dato[0]=='$' && dato[5]=='$'){
-			for(i=0;i<2;i++)
-				serieFreeRTOS_putchar(dato[i]);
-		}
-		else if (dato[0]=='%' && dato[5]=='%'){
-			for(i=2;i<4;i++)
-				serieFreeRTOS_putchar(dato[i]);
-		}
+		vTaskDelay(2);
 	}
 }
 

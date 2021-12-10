@@ -9,7 +9,7 @@
 
 
 
-#define CHEQUEAR_SERIE_TX_MS	(1)
+#define CHEQUEAR_SERIE_MS	(2)
 static UART_HandleTypeDef *mi_uart;
 static QueueHandle_t cola_tx;
 static QueueHandle_t cola_rx;
@@ -28,7 +28,7 @@ static void TareaTxSerie(void *p)
 			enviando_serie = 1;
 			__HAL_UART_ENABLE_IT(mi_uart, UART_IT_TXE);
 		}
-		vTaskDelay(CHEQUEAR_SERIE_TX_MS);
+		vTaskDelay(CHEQUEAR_SERIE_MS);
 	}
 }
 
@@ -73,7 +73,8 @@ void serieFreeRTOS_inicializar(UART_HandleTypeDef *huart, uint32_t len_colas)
 
 void serieFreeRTOS_putchar(uint8_t dato)
 {
-	xQueueSend(cola_tx,&dato,portMAX_DELAY);
+	xQueueSend(cola_tx,&dato,0);
+	HAL_Delay(1);
 }
 
 uint8_t serieFreeRTOS_getchar(void)

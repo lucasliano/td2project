@@ -210,7 +210,7 @@ int main(void)
 			  "tarea_serie",
 			  configMINIMAL_STACK_SIZE,
 			  NULL,
-			  3,
+			  4,
 			  NULL)!= pdPASS) Error_Handler();
 
 
