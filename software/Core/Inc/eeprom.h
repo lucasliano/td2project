@@ -51,6 +51,7 @@ uint8_t read_eeprom(uint8_t addr, uint8_t* rbuff, uint8_t size);
 uint8_t eeprom_write_page(uint8_t page, uint8_t offset, uint8_t* data, uint8_t size);
 uint8_t eeprom_read_page(uint8_t page, uint8_t offset, uint8_t* rbuff, uint8_t size);
 uint8_t save_event(uint8_t event);
+void eeprom_save_pass(uint8_t* clave);
 
 
 #endif /* INC_EEPROM_H_ */

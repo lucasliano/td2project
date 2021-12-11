@@ -9,11 +9,11 @@
 
 
 
-#define CHEQUEAR_SERIE_MS	(2)
-static UART_HandleTypeDef *mi_uart;
-static QueueHandle_t cola_tx;
-static QueueHandle_t cola_rx;
-static uint8_t enviando_serie;
+#define CHEQUEAR_SERIE_MS	(10)
+UART_HandleTypeDef *mi_uart;
+QueueHandle_t cola_tx;
+QueueHandle_t cola_rx;
+uint8_t enviando_serie;
 
 uint8_t buffer_rx[LEN_BUFFER_RX];
 uint8_t buffer_tx[LEN_BUFFER_TX];
@@ -26,6 +26,7 @@ static void TareaTxSerie(void *p)
 		if(uxQueueMessagesWaiting(cola_tx)>0 && (enviando_serie == 0)) //Hay un dato esperando a ser enviado
 		{
 			enviando_serie = 1;
+			vTaskDelay(2000);
 			__HAL_UART_ENABLE_IT(mi_uart, UART_IT_TXE);
 		}
 		vTaskDelay(CHEQUEAR_SERIE_MS);
@@ -67,14 +68,13 @@ void serieFreeRTOS_inicializar(UART_HandleTypeDef *huart, uint32_t len_colas)
 	mi_uart = huart;
 	cola_rx=xQueueCreate(len_colas,sizeof(uint8_t));	//Recibo de a un char
 	cola_tx=xQueueCreate(len_colas,sizeof(uint8_t));
-	if(xTaskCreate(TareaTxSerie,"serie",configMINIMAL_STACK_SIZE*3,NULL,3,NULL)!= pdPASS) Error_Handler();
+	if(xTaskCreate(TareaTxSerie,"serie",configMINIMAL_STACK_SIZE*3,NULL,1,NULL)!= pdPASS) Error_Handler();
 	__HAL_UART_ENABLE_IT(mi_uart, UART_IT_RXNE);
 }
 
 void serieFreeRTOS_putchar(uint8_t dato)
 {
 	xQueueSend(cola_tx,&dato,0);
-	HAL_Delay(1);
 }
 
 uint8_t serieFreeRTOS_getchar(void)

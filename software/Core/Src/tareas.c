@@ -21,6 +21,8 @@ extern arrebote boton[4][4];
 extern uint8_t clave_ok;
 extern uint8_t rfid_internal_state;
 extern medidas adc_buffer;
+extern uint8_t rfid_internal_state;
+uint8_t estado_global = APAGADO;
 /* ===========================================*/
 
 void checkear_teclado(void *p)
@@ -232,14 +234,13 @@ void detectar_sensores(void *p)
  */
 {
 	// (Dependiendo del estado de la alarma, debe hacer sonar el buzzer)
-	uint8_t estado = APAGADO;
 
 	for(;;){
-		switch(estado){
+		switch(estado_global){
 		case APAGADO:
 			xSemaphoreTake(sem_state,portMAX_DELAY);
 			if(clave_ok){
-				estado = ENCENDIDIO;
+				estado_global = ENCENDIDIO;
 				clave_ok = 0; //Bajo el flag
 				toggle_led(LED_1);
 				save_event(EVENT_ALARM_ON);
@@ -252,17 +253,17 @@ void detectar_sensores(void *p)
 			if(leer_sensor(1)){
 				// Area 2
 				save_event(EVENT_ALARM_BEEP_SALA1);
-				estado = ALARMANDO;
+				estado_global = ALARMANDO;
 			}
 			if(leer_sensor(2)){
 				// Area 2
 				save_event(EVENT_ALARM_BEEP_SALA2);
-				estado = ALARMANDO;
+				estado_global = ALARMANDO;
 			}
 
 			xSemaphoreTake(sem_state,portMAX_DELAY);
 			if(clave_ok){
-				estado = APAGADO;
+				estado_global = APAGADO;
 				clave_ok = 0; //Bajo el flag
 				save_event(EVENT_ALARM_OFF);
 				toggle_led(LED_1);
@@ -276,7 +277,7 @@ void detectar_sensores(void *p)
 
 			xSemaphoreTake(sem_state,portMAX_DELAY);
 			if(clave_ok){
-				estado = APAGADO;
+				estado_global = APAGADO;
 				clave_ok = 0; //Bajo el flag
 				save_event(EVENT_ALARM_OFF);
 				toggle_led(LED_1);
@@ -285,7 +286,7 @@ void detectar_sensores(void *p)
 			break;
 
 		default:
-			estado = APAGADO;
+			estado_global = APAGADO;
 			clave_ok = 0;
 			break;
 
@@ -369,6 +370,7 @@ void tarea_serie(void *p)
 	static uint8_t clave[LARGO_CLAVE+1];
 	static uint8_t datos[LEN_BUFFER_RX];
 	static uint8_t cmd = 255;
+	static uint8_t jorge;
 
 	while(1)
 	{
@@ -380,7 +382,7 @@ void tarea_serie(void *p)
 				{
 					estado = ESPERANDO_CLAVE;
 					for (uint8_t i = 0; i < LEN_BUFFER_RX; i++)
-						datos[i] = ' ';
+						datos[i] = 'q';
 				}
 				break;
 			case ESPERANDO_CLAVE:
@@ -465,12 +467,15 @@ void tarea_serie(void *p)
 				{
 					// Acá hay que ejecutar lo que queremos que pase.
 					serieFreeRTOS_putchar('$');
-					for (uint8_t i = 0; i < LEN_BUFFER_RX; i++)
+					for (jorge = 0; jorge < LEN_BUFFER_RX; jorge++)
 					{
-						serieFreeRTOS_putchar(datos[i]);
+						serieFreeRTOS_putchar(datos[jorge]);
 					}
 					serieFreeRTOS_putchar(0xD);
 					serieFreeRTOS_putchar(0xA);
+
+					serie_ejecutar(cmd, datos);
+
 				}
 				estado = ESPERANDO_INICIO;
 				break;
@@ -480,7 +485,29 @@ void tarea_serie(void *p)
 				contador = 0;
 				break;
 		}
-		vTaskDelay(2);
+		vTaskDelay(1);
+	}
+}
+
+void serie_ejecutar(uint8_t comando, uint8_t* datos)
+{
+	uint8_t clave[LARGO_CLAVE];
+	uint8_t size;
+	if (estado_global == ALARMANDO) return;
+	switch(comando)
+	{
+		case CMD_CLAVE:
+			for(uint8_t i = 0; i < LARGO_CLAVE; i++)
+				clave[i] = datos[i];
+			eeprom_save_pass(clave);
+			break;
+		case CMD_RFID:
+			rfid_internal_state = ADDING_CARD_STATE;
+			break;
+		case CMD_MEM:
+			size = datos[0];
+
+			break;
 	}
 }
 

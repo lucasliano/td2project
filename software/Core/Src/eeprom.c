@@ -215,10 +215,24 @@ uint8_t save_event(uint8_t event)
 
 
 
+void eeprom_save_pass(uint8_t* clave)
+{
+	eeprom_write_page(PASS_INIT_PAGE, 0, clave, 4);
+	HAL_Delay(10);
+}
 
 
-
-
+void get_events(struct eeprom_logs_block* eventos, uint8_t size)
+{
+	uint8_t rbuff[8];
+	uint8_t contador = 0;
+	for (uint8_t page = LOGS_INIT_PAGE; page < size/2; page++)
+	{
+		eeprom_read_page(page, 0, rbuff, EEPROM_PAGE_SIZE);
+		HAL_Delay(10);
+		// TERMINAR
+	}
+}
 
 
 

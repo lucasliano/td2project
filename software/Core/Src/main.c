@@ -170,16 +170,16 @@ int main(void)
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
     if(xTaskCreate(checkear_teclado,
-    		  	  "checkear_teclado",
+			  "checkear_teclado",
   			  configMINIMAL_STACK_SIZE,
-    			  NULL,
-    			  1,
-    			  NULL)!= pdPASS) Error_Handler();
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(detectar_sensores,
   			  "detectar_sensores",
   			  configMINIMAL_STACK_SIZE,
   			  NULL,
-  			  2,
+  			  1,
   			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(lcd_update,
   			  "lcd_update",
@@ -188,29 +188,28 @@ int main(void)
   			  1,
   			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(detectar_rfid,
-    			  "detectar_rfid",
+			  "detectar_rfid",
   			  configMINIMAL_STACK_SIZE*4,
-    			  NULL,
-    			  2,
-    			  NULL)!= pdPASS) Error_Handler();
-
+			  NULL,
+			  1,
+			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(tarea_conversiones,
   			  "tarea_conversiones",
   			  configMINIMAL_STACK_SIZE,
   			  NULL,
-  			  2,
+  			  1,
   			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(checkear_power_supply,
   			  "checkear_power_supply",
   			  configMINIMAL_STACK_SIZE,
   			  NULL,
-  			  3,
+  			  2,
   			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(tarea_serie,
 			  "tarea_serie",
 			  configMINIMAL_STACK_SIZE,
 			  NULL,
-			  4,
+			  3,
 			  NULL)!= pdPASS) Error_Handler();
 
 

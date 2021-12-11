@@ -33,5 +33,6 @@ void checkear_power_supply(void *p);
 void lcd_update(void *p);
 void actualizar_nivel_bateria(void *p);
 void tarea_serie(void *p);
+void serie_ejecutar(uint8_t, uint8_t*);
 
 #endif /* __TAREAS_H */
