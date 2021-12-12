@@ -39,7 +39,6 @@ void checkear_teclado(void *p)
 	uint8_t estado = 0;
 
 	for(;;){
-
 		//Chequeo si esta la clave y si funciona OK
 		if (i == (LARGO_CLAVE+1)){
 			i=0;
@@ -66,23 +65,27 @@ void checkear_teclado(void *p)
 			if(hay_flanco_arrebote(&boton[0][0])){
 					tecla[i] = '1';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			chequear_arrebote(&boton[0][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
 			if(hay_flanco_arrebote(&boton[0][1])){
 					tecla[i] = '2';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 
 			chequear_arrebote(&boton[0][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
 			if(hay_flanco_arrebote(&boton[0][2]))
-				{
+			{
 					tecla[i] = '3';
 					i++;
-				}
+					start_buzzer(200, 200, 1);
+			}
 			chequear_arrebote(&boton[0][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
 			if(hay_flanco_arrebote(&boton[0][3])){
 					tecla[i] = 'A';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 
 			estado = 1;
@@ -98,23 +101,27 @@ void checkear_teclado(void *p)
 			if(hay_flanco_arrebote(&boton[1][0])){
 					tecla[i] = '4';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			chequear_arrebote(&boton[1][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
 			if(hay_flanco_arrebote(&boton[1][1])){
 					tecla[i] = '5';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 
 			chequear_arrebote(&boton[1][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
 			if(hay_flanco_arrebote(&boton[1][2]))
-				{
+			{
 					tecla[i] = '6';
 					i++;
-				}
+					start_buzzer(200, 200, 1);
+			}
 			chequear_arrebote(&boton[1][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
 			if(hay_flanco_arrebote(&boton[1][3])){
 					tecla[i] = 'B';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			estado = 2;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
@@ -129,23 +136,27 @@ void checkear_teclado(void *p)
 			if(hay_flanco_arrebote(&boton[2][0])){
 					tecla[i] = '7';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			chequear_arrebote(&boton[2][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
 			if(hay_flanco_arrebote(&boton[2][1])){
 					tecla[i] = '8';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 
 			chequear_arrebote(&boton[2][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
 			if(hay_flanco_arrebote(&boton[2][2]))
-				{
+			{
 					tecla[i] = '9';
 					i++;
-				}
+					start_buzzer(200, 200, 1);
+			}
 			chequear_arrebote(&boton[2][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
 			if(hay_flanco_arrebote(&boton[2][3])){
 					tecla[i] = 'C';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			estado = 3;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
@@ -160,22 +171,26 @@ void checkear_teclado(void *p)
 			if(hay_flanco_arrebote(&boton[3][0])){
 					tecla[i] = '*';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			chequear_arrebote(&boton[3][1], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA2));
 			if(hay_flanco_arrebote(&boton[3][1])){
 					tecla[i] = '0';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			chequear_arrebote(&boton[3][2], HAL_GPIO_ReadPin(PUERTO_COLUMNA123,COLUMNA3));
 			if(hay_flanco_arrebote(&boton[3][2]))
-				{
+			{
 					tecla[i] = '#';
 					i++;
-				}
+					start_buzzer(200, 200, 1);
+			}
 			chequear_arrebote(&boton[3][3], HAL_GPIO_ReadPin(PUERTO_COLUMNA4,COLUMNA4));
 			if(hay_flanco_arrebote(&boton[3][3])){
 					tecla[i] = 'D';
 					i++;
+                    start_buzzer(200, 200, 1);
 			}
 			estado = 0;
 			//vTaskDelay(DEMORA_LECTURA / portTICK_RATE_MS);
@@ -215,9 +230,12 @@ void detectar_rfid(void *p)
 				rfid_toggle_state();
 				break;
 			case ADDING_CARD_STATE:
+				toggle_led(LED_2);
 				while( rfid_find_card((uint8_t*) &new_id) != CARD_DETECTED);
 				status = rfid_add_id(new_id);
 				rfid_internal_state = WORKING_STATE;
+				toggle_led(LED_2);
+				start_buzzer(200, 100, 2);
 				break;
 		}
 
@@ -244,7 +262,7 @@ void detectar_sensores(void *p)
 				clave_ok = 0; //Bajo el flag
 				toggle_led(LED_1);
 				save_event(EVENT_ALARM_ON);
-				start_buzzer(500, 500, 5);
+				start_buzzer(100, 100, 3);
 			}
 			xSemaphoreGive(sem_state);
 			break;
@@ -267,6 +285,7 @@ void detectar_sensores(void *p)
 				clave_ok = 0; //Bajo el flag
 				save_event(EVENT_ALARM_OFF);
 				toggle_led(LED_1);
+				start_buzzer(100, 100, 3);
 			}
 			xSemaphoreGive(sem_state);
 			break;
@@ -337,7 +356,7 @@ void lcd_update(void *p)
 		lcd_send_string (hora_str,8);
 
 		lcd_cursor(1, 0);
-		lcd_send_string ("BATERIA: |    |",15);
+		lcd_send_string ("BATERIA: |   |",14);
 		vTaskDelay(30);
 
 		batt_level = adc_get_batt_level();
@@ -367,10 +386,9 @@ void tarea_serie(void *p)
 	uint8_t byte_recibido = 0x0;
 	static uint8_t estado = ESPERANDO_INICIO;
 	static uint8_t contador = 0;
-	static uint8_t clave[LARGO_CLAVE+1];
+	static uint8_t local_clave[LARGO_CLAVE+1];
 	static uint8_t datos[LEN_BUFFER_RX];
 	static uint8_t cmd = 255;
-	static uint8_t jorge;
 
 	while(1)
 	{
@@ -388,13 +406,13 @@ void tarea_serie(void *p)
 			case ESPERANDO_CLAVE:
 				if (contador < LARGO_CLAVE-1)
 				{
-					clave[contador] = byte_recibido;
+					local_clave[contador] = byte_recibido;
 					contador++;
 				}else{
-					clave[contador] = byte_recibido;
+					local_clave[contador] = byte_recibido;
 					contador = 0;
-					clave[LARGO_CLAVE] = '#';
-					if(chequear_clave(clave) ){
+					local_clave[LARGO_CLAVE] = '#';
+					if(chequear_clave(local_clave) ){
 						estado = ESPERANDO_CMD;
 					}
 					else{
@@ -426,7 +444,6 @@ void tarea_serie(void *p)
 							datos[contador] = byte_recibido;
 							contador = 0;
 							estado = ESPERANDO_FIN1;
-							cmd = 255;
 						}
 						break;
 					case CMD_RFID:
@@ -435,17 +452,15 @@ void tarea_serie(void *p)
 							estado = ESPERANDO_FIN1;
 						}else{
 							estado = ESPERANDO_INICIO;
+							cmd = 255;
 						}
-						cmd = 255;
 						break;
 					case CMD_MEM:
-						if (byte_recibido > 2*LOGS_BLOCK_DEPTH || byte_recibido == 0)
+						if (byte_recibido == 'M')
 						{
-							estado = ESPERANDO_INICIO;
-							cmd = 255;
-						}else{
-							datos[0] = byte_recibido;
 							estado = ESPERANDO_FIN1;
+						}else{
+							estado = ESPERANDO_INICIO;
 							cmd = 255;
 						}
 						break;
@@ -460,24 +475,16 @@ void tarea_serie(void *p)
 					estado = ESPERANDO_FIN2;
 				}else{
 					estado = ESPERANDO_INICIO;
+					cmd = 255;
 				}
 				break;
 			case ESPERANDO_FIN2:
 				if (byte_recibido == 0xA)
 				{
-					// Acá hay que ejecutar lo que queremos que pase.
-					serieFreeRTOS_putchar('$');
-					for (jorge = 0; jorge < LEN_BUFFER_RX; jorge++)
-					{
-						serieFreeRTOS_putchar(datos[jorge]);
-					}
-					serieFreeRTOS_putchar(0xD);
-					serieFreeRTOS_putchar(0xA);
-
 					serie_ejecutar(cmd, datos);
-
 				}
 				estado = ESPERANDO_INICIO;
+				cmd = 255;
 				break;
 			default:
 				estado = ESPERANDO_INICIO;
@@ -491,22 +498,31 @@ void tarea_serie(void *p)
 
 void serie_ejecutar(uint8_t comando, uint8_t* datos)
 {
-	uint8_t clave[LARGO_CLAVE];
-	uint8_t size;
-	if (estado_global == ALARMANDO) return;
+	struct eeprom_logs_block eventos[LOGS_SIZE];
+	if (estado_global != APAGADO) return;
 	switch(comando)
 	{
 		case CMD_CLAVE:
-			for(uint8_t i = 0; i < LARGO_CLAVE; i++)
-				clave[i] = datos[i];
-			eeprom_save_pass(clave);
+			eeprom_save_pass(datos);
 			break;
 		case CMD_RFID:
 			rfid_internal_state = ADDING_CARD_STATE;
 			break;
 		case CMD_MEM:
-			size = datos[0];
-
+			get_events(eventos);
+			for (uint8_t i = 0; i < LOGS_SIZE; i++)
+			{
+				if (eventos[i].evento != 255)
+				{
+					serieFreeRTOS_putchar('$');
+					serieFreeRTOS_putchar(eventos[i].evento);
+					serieFreeRTOS_putchar(eventos[i].hora.Hours);
+					serieFreeRTOS_putchar(eventos[i].hora.Minutes);
+					serieFreeRTOS_putchar(eventos[i].hora.Seconds);
+					serieFreeRTOS_putchar(0xD);
+					serieFreeRTOS_putchar(0xA);
+				}
+			}
 			break;
 	}
 }

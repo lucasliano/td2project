@@ -215,25 +215,39 @@ uint8_t save_event(uint8_t event)
 
 
 
-void eeprom_save_pass(uint8_t* clave)
+void eeprom_save_pass(uint8_t* local_clave)
 {
-	eeprom_write_page(PASS_INIT_PAGE, 0, clave, 4);
+	eeprom_write_page(PASS_INIT_PAGE, 0, clave, LARGO_CLAVE);
+	memcpy(clave, local_clave, LARGO_CLAVE);
 	HAL_Delay(10);
 }
 
 
-void get_events(struct eeprom_logs_block* eventos, uint8_t size)
+void get_events(struct eeprom_logs_block* eventos)
 {
 	uint8_t rbuff[8];
-	uint8_t contador = 0;
-	for (uint8_t page = LOGS_INIT_PAGE; page < size/2; page++)
+	uint8_t index;
+	uint8_t offset = LOGS_INIT_PAGE;
+	for (uint8_t page = LOGS_INIT_PAGE; page < LOGS_BLOCK_DEPTH; page++)
 	{
 		eeprom_read_page(page, 0, rbuff, EEPROM_PAGE_SIZE);
 		HAL_Delay(10);
-		// TERMINAR
+		index = (2*(page-offset) + 0);
+		memcpy(eventos + index, rbuff, sizeof(struct eeprom_logs_block));
+		index = (2*(page-offset) + 1);
+		memcpy(eventos + index, rbuff+4, sizeof(struct eeprom_logs_block));
 	}
-}
 
+	uint8_t hbuff[EEPROM_PAGE_SIZE];
+	for (uint8_t page = 0; page < EEPROM_TOTAL_PAGES; page++)
+	{
+		for (uint8_t i = 0; i < EEPROM_PAGE_SIZE; i++)
+			hbuff[i] = 0;
+		eeprom_read_page(page, 0, hbuff, EEPROM_PAGE_SIZE);
+		HAL_Delay(10);
+	}
+	HAL_Delay(10);
+}
 
 
 

@@ -80,7 +80,7 @@ void serieFreeRTOS_putchar(uint8_t dato)
 uint8_t serieFreeRTOS_getchar(void)
 {
 	uint8_t dato;
-	xQueueReceive(cola_rx, &dato, portMAX_DELAY);
+	xQueueReceive(cola_rx, &dato, 100);
 	return dato;
 }
 

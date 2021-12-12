@@ -39,7 +39,6 @@ uint8_t chequear_clave(uint8_t *t){
 
 
 void init_teclado(void){
-	memcpy(clave, "1234", 4);
 	//Fila 1
 	inicializar_arrebote(&boton[0][0],0,DEMORA_REBOTE/DEMORA_LECTURA);
 	inicializar_arrebote(&boton[0][1],0,DEMORA_REBOTE/DEMORA_LECTURA);

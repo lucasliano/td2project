@@ -93,19 +93,19 @@ void update_adc(void)
 
 void fsm_power_supply(void)
 {
-	static uint8_t state;
+	static uint8_t state = WITHOUT_POWER;
 
 	switch(state)
 	{
 		case WITH_POWER:
-			if (adc_buffer.power_supply < 1000)
+			if (adc_buffer.batt < 1000)
 			{
 				save_event(EVENT_POWER_OFF);
 				state = WITHOUT_POWER;
 			}
 			break;
 		case WITHOUT_POWER:
-			if (adc_buffer.power_supply > 2500)
+			if (adc_buffer.batt > 2500)
 			{
 				save_event(EVENT_POWER_ON);
 				state = WITH_POWER;
@@ -113,7 +113,7 @@ void fsm_power_supply(void)
 			break;
 
 		default:
-			state = WITH_POWER;
+			state = WITHOUT_POWER;
 	}
 }
 

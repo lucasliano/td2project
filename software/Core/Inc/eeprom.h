@@ -35,6 +35,7 @@
 #define LOGS_INIT_PAGE 		RFID_INIT_PAGE+RFID_BLOCK_DEPTH
 #define LOGS_BLOCK_DEPTH	28
 
+#define LOGS_SIZE			48
 
 //--------------------- Estructuras -----------------------
 
@@ -52,6 +53,7 @@ uint8_t eeprom_write_page(uint8_t page, uint8_t offset, uint8_t* data, uint8_t s
 uint8_t eeprom_read_page(uint8_t page, uint8_t offset, uint8_t* rbuff, uint8_t size);
 uint8_t save_event(uint8_t event);
 void eeprom_save_pass(uint8_t* clave);
+void get_events(struct eeprom_logs_block*);
 
 
 #endif /* INC_EEPROM_H_ */

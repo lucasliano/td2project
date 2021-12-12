@@ -135,6 +135,7 @@ int main(void)
   led_init();
   init_teclado();
   init_eeprom(&hi2c1);
+  rtc_init();
   lcd_init (&hi2c1);
   adc_init (&hadc1);
   serieFreeRTOS_inicializar(&huart1, 64);
@@ -207,7 +208,7 @@ int main(void)
   			  NULL)!= pdPASS) Error_Handler();
     if(xTaskCreate(tarea_serie,
 			  "tarea_serie",
-			  configMINIMAL_STACK_SIZE,
+			  configMINIMAL_STACK_SIZE*4,
 			  NULL,
 			  3,
 			  NULL)!= pdPASS) Error_Handler();
@@ -610,6 +611,8 @@ void Error_Handler(void)
   __disable_irq();
   while (1)
   {
+	  toggle_led(LED_2);
+	  for(uint32_t i = 0; i < 200000; i++);
   }
   /* USER CODE END Error_Handler_Debug */
 }

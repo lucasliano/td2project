@@ -15,6 +15,8 @@
 #define MINUTOS 1
 
 RTC_TimeTypeDef obtener_tiempo(void);
+void rtc_init(void);
+void rtc_update(RTC_TimeTypeDef);
 
 
 #endif /* INC_RTC_H_ */
