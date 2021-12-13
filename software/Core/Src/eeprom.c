@@ -237,15 +237,6 @@ void get_events(struct eeprom_logs_block* eventos)
 		index = (2*(page-offset) + 1);
 		memcpy(eventos + index, rbuff+4, sizeof(struct eeprom_logs_block));
 	}
-
-	uint8_t hbuff[EEPROM_PAGE_SIZE];
-	for (uint8_t page = 0; page < EEPROM_TOTAL_PAGES; page++)
-	{
-		for (uint8_t i = 0; i < EEPROM_PAGE_SIZE; i++)
-			hbuff[i] = 0;
-		eeprom_read_page(page, 0, hbuff, EEPROM_PAGE_SIZE);
-		HAL_Delay(10);
-	}
 	HAL_Delay(10);
 }
 
