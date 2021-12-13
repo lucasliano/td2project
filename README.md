@@ -94,6 +94,13 @@ The main board includes a battery charger and power supply source administrator.
   </a>
 </p>
 
+
+## Requirements
+
+```
+sudo apt-get install python-dev libbluetooth-dev
+```
+
 <!-- Authors -->
 ## Authors
 * Liaño, Lucas

@@ -33,3 +33,5 @@ fp-info-cache
 software/.settings
 software/Debug/
 software/Release/
+CLI/venv/
+__pycache__/
