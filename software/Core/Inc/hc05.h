@@ -19,6 +19,7 @@
 #define CMD_CLAVE	'C'
 #define CMD_RFID	'R'
 #define CMD_MEM		'M'
+#define CMD_HORA	'H'
 
 //---------- Estados ----------------
 #define ESPERANDO_INICIO	0

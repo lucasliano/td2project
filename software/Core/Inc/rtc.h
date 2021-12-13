@@ -17,6 +17,7 @@
 RTC_TimeTypeDef obtener_tiempo(void);
 void rtc_init(void);
 void rtc_update(RTC_TimeTypeDef);
+uint8_t string_to_int(uint8_t *p);
 
 
 #endif /* INC_RTC_H_ */

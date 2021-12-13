@@ -387,7 +387,7 @@ void tarea_serie(void *p)
 	static uint8_t estado = ESPERANDO_INICIO;
 	static uint8_t contador = 0;
 	static uint8_t local_clave[LARGO_CLAVE+1];
-	static uint8_t datos[LEN_BUFFER_RX];
+	static uint8_t datos[6];
 	static uint8_t cmd = 255;
 
 	while(1)
@@ -464,6 +464,25 @@ void tarea_serie(void *p)
 							cmd = 255;
 						}
 						break;
+					case CMD_HORA:
+						if (contador < 6-1)
+						{
+							datos[contador] = byte_recibido;
+							contador++;
+
+							//Filtro de valores numericos
+							if (byte_recibido < 48 || byte_recibido > 57)
+							{
+								contador = 0;
+								estado = ESPERANDO_INICIO;
+								cmd = 255;
+							}
+						}else{
+							datos[contador] = byte_recibido;
+							contador = 0;
+							estado = ESPERANDO_FIN1;
+						}
+						break;
 					default:
 						estado = ESPERANDO_INICIO;
 						cmd = 255;
@@ -499,6 +518,7 @@ void tarea_serie(void *p)
 void serie_ejecutar(uint8_t comando, uint8_t* datos)
 {
 	struct eeprom_logs_block eventos[LOGS_SIZE];
+	RTC_TimeTypeDef time;
 	if (estado_global != APAGADO) return;
 	switch(comando)
 	{
@@ -524,8 +544,15 @@ void serie_ejecutar(uint8_t comando, uint8_t* datos)
 				}
 			}
 			break;
+		case CMD_HORA:
+			time.Hours = string_to_int(datos);
+			time.Minutes = string_to_int(datos+2);
+			time.Seconds = string_to_int(datos+4);
+			rtc_update(time);
+			break;
 	}
 }
+
 
 
 

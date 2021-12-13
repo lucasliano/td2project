@@ -31,3 +31,9 @@ RTC_TimeTypeDef obtener_tiempo(void){
 
 	return tiempo;
 }
+
+uint8_t string_to_int(uint8_t *p){
+    unsigned int res=0;
+    res = (p[0]-48)*10 + (p[1]-48);
+    return res;
+}
