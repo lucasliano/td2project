@@ -1,13 +1,19 @@
 from time import sleep
 from bluetooth import *
 
+class HorarioBase:
+     def __init__(self, horas, minutos, segundos):
+         self.horas = str(horas).zfill(2)
+         self.minutos = str(minutos).zfill(2)
+         self.segundos = str(segundos).zfill(2)
+
+
 class HC05:
      
      CMD_CLAVE = 'C'
      CMD_RFID = 'R'
      CMD_MEMORY = 'M'
      CMD_HORA = 'H'
-
 
      EVENTS = [
           'EVENT_ALARM_ON',
@@ -21,10 +27,17 @@ class HC05:
 
      def __init__(self, mac):
           print('Searching ALARM SYSTEM...')
-          self.bt = BluetoothSocket( RFCOMM )
-          port = 1
-          self.password = '1234'
-          self.bt.connect((mac, port))
+          try:
+               self.bt = BluetoothSocket( RFCOMM )
+               port = 1
+               self.password = '1234'
+               self.bt.connect((mac, port))
+          except btcommon.BluetoothError:
+               print('Error! Device busy, try again in a few seconds.')
+          except KeyboardInterrupt:
+               self.bt.close()
+          print('Device was found!')
+
 
      def set_pass(self, password):
           self.password = password
@@ -34,13 +47,14 @@ class HC05:
           if cmd is self.CMD_RFID: payload = 'R'
           if cmd is self.CMD_MEMORY: payload = 'M'
           try:
-               self.bt.send('$'+ self.password + cmd + payload + chr(0xD) + chr(0xA))
+               trama = '$'+ self.password + cmd + payload + chr(0xD) + chr(0xA)
+               self.bt.send(trama)
           except:
                raise RuntimeError('Error on SEND!')
 
-     def recv_data(self):
-          self.bt.settimeout(5)
-          return self.bt.recv(512)
+     def recv_data(self, size = 512):
+          self.bt.settimeout(10)
+          return self.bt.recv(size)
 
      def close(self):
           self.bt.close()
@@ -51,7 +65,7 @@ class HC05:
           almost_final_frames = [frame[:-2] for frame in not_empty_frames]
           final_frames = [frame for frame in almost_final_frames if len(frame)==4]
 
-          if not final_frames: raise RuntimeError('Error en el enviío de datos.')
+          if not final_frames: raise RuntimeError('Error en el envío de datos.')
           
           print('======= EEPROM CONTENT ==========')
           for frame in final_frames:
@@ -64,7 +78,7 @@ def init():
      return HC05(hc05_addr)
 
 
-def read_mem():
+def get_mem():
      device = init()
      
      running = True
@@ -82,7 +96,6 @@ def read_mem():
                device.close()
 
      device.process_raw_data(raw_data)
-
      device.close()
      
 
@@ -97,10 +110,34 @@ def set_pass():
      if args.old_pass: device.set_pass(args.old_pass)
      device.send_command(device.CMD_CLAVE, payload=str(args.new_pass))
 
+     print('Command was sent')
      device.close()
 
+def set_time():
+     import argparse
+     parser = argparse.ArgumentParser()
+     parser.add_argument('--hs', required=True, default=1, help='Horas')
+     parser.add_argument('--min', required=True, default=2, help='Minutos')
+     parser.add_argument('--seg', required=True, default=3, help='Segundos')
+
+     args = parser.parse_args()
+
+     time = HorarioBase(args.hs, args.min, args.seg)
+     device = init()
+     payload = str(time.horas).zfill(2) + str(time.minutos).zfill(2) + str(time.segundos).zfill(2)
+     device.send_command(device.CMD_HORA, payload)
+
+     print('Command was sent')
+     device.close()
+
+def add_rfid():
+     device = init()
+     device.send_command(device.CMD_RFID)
+     
+     print('Command was sent')
+     device.close()
 
 if __name__ == '__main__':
-     read_mem()
+     get_mem()
      # set_pass()
 

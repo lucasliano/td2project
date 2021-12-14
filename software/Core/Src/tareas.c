@@ -543,6 +543,7 @@ void serie_ejecutar(uint8_t comando, uint8_t* datos)
 					serieFreeRTOS_putchar(0xA);
 				}
 			}
+			vTaskDelay(3000);
 			break;
 		case CMD_HORA:
 			time.Hours = string_to_int(datos);
@@ -552,9 +553,6 @@ void serie_ejecutar(uint8_t comando, uint8_t* datos)
 			break;
 	}
 }
-
-
-
 
 
 

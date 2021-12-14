@@ -11,8 +11,10 @@ setup(
     ],
     entry_points = {
         'console_scripts': [
-            'read_mem = td2project.client:read_mem',
+            'get_mem = td2project.client:get_mem',
             'set_pass = td2project.client:set_pass',
+            'set_time = td2project.client:set_time',
+            'add_rfid = td2project.client:add_rfid',
         ]
     }
 )
