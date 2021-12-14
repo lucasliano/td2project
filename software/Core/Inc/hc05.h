@@ -34,7 +34,6 @@ void serieFreeRTOS_inicializar(UART_HandleTypeDef *huart, uint32_t len_colas);
 void serieFreeRTOS_IRQ(void);
 void serieFreeRTOS_putchar(uint8_t dato);
 uint8_t serieFreeRTOS_getchar(void);
-void send_done(void);
 
 
 #endif /* INC_HC05_H_ */
